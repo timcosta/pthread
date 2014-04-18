@@ -104,47 +104,93 @@ void currExit(Schedular * s) {
 
 	// Add list of joins from current TCB to back of ready queue
 	while (temp != NULL) {
+
+		// Set the join val for all threads joining on the current exiting one, to the exit val of the exiting one
+		temp->thread_cb->join_val = s->exit_val;
+
+		// Add temp to the back of the queue
 		s->tail->next = temp;
+		s->tail->next->prev = s->tail;
+
+		// Set temp to the next node in the joining list
+		temp = temp->next;
+
+		// Set tail to the end of ready queue
+		s->tail = s->tail->next;
+		s->tail->next = NULL;
 
 	}
 
-		-detete memory of current TCB
-			-stack of u context
-			-TCB itself
+	
+	temp = s->head; 
 
-		-sets head of ready queue to current
-		- change context to current TCB context)
+	// Set the next thread in the ready queue to the head
+	if (s->head == s->tail) {
+		s->head = NULL;
+		s->tail = NULL;
+	} else {
+		s->head = s->head->next;
+		s->head->prev = NULL;
+	}
+
+	free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
+	free(temp->thread_cb); // Free the TCB itself 
+	free(temp); // delete the memory of this node
+
+	// Decrement the size of the queue
+	s->size--;
+
+	// Change context to new TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context); 
+
 }
 
-// Remove a job from the queue to be used by a threadpool
-void removeJob(Schedular * q, dispatch_fn * func, void ** arg) {
-	//fprintf(stdout,"removeJob\n");
-	// Only remove a job if there is at least one already on the queue 
-	if (q->size > 0) {
+// Find node with TCB thread_id == id
+Node * findTarget(Node * root, pthread_t id) {
 
-		Node * temp = q->head;
+	// Check if we hit a dead end
+	if (root == NULL) return NULL;
 
-		// Set these pointers in the thread to the values of the job info
-		*func = temp->func;
-		*arg  = temp->func_arg;
+	// Check if we have the correct node
+	if (root->thread_cb->thread_id == id) return root;
 
-		// Remove the last job on the queue
-		if (q->head == q->tail) {
-			q->head = NULL;
-			q->tail = NULL;
-			free(temp); // delete the memory of this node
+	// Recursively search for the correct node
+	Node* n = findTarget(root->next);
+	Node* j = findTarget(root->join_list);
 
-		} else {
-			q->head = q->head->next;
-			q->head->prev = NULL;
-			free(temp); // delete the memory of this node
-		}
+	// Return recursive result
+	return (j==NULL) ? n : j;
 
-		// Decrement the size of the queue
-		q->size--;
 
+}
+
+// Join current running thread to another thread
+void join(Schedular * s) {
+
+	// Find the thread we are joing on
+	Node * temp = findTarget(s->head, s->join_id);
+
+	// Set temp to be the joining list
+	temp = temp->join_list;
+
+	// Add current TCB to back of its joining queue
+	if (temp == NULL) {
+		temp = s->head; 
+	} else {
+		while (temp->next != NULL) temp = temp->next;
 	}
-		
+
+	temp->next = s->head;
+
+	// Set head of ready queue to current
+	s->head = s->head->next;
+	s->head->prev = NULL;
+
+	// Make the end of the join list NULL
+	temp->next->next = NULL;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 }
 
 // Have we reached the maximum number of threads

@@ -53,11 +53,11 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 // Terminate the calling thread. Return value set that can be used by the calling thread when calling pthread_join
 void pthread_exit(void *value_ptr) { 
 	
-	// thread->val = *retval;
-
-	
 	// Set schedularAction flag to 0 
 	schedular->action = 0;
+
+	// Set the exit val
+	schedular->exit_val = *value_ptr;
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
@@ -91,6 +91,9 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 
 	// swap to schedular context to perform join
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
+
+	// Set the join val
+	*value_ptr = schedular->head->thread_cb->join_val;
 	
 	return 0;
 }
@@ -114,12 +117,8 @@ void schedule(void) {
 
 		} else if (schedular->action == 2) {
 
-	-join
-		-search for joining TCB in ready queue(and joining queues)
-		- add current TCB to back of its joining queue 
-		-sets head of ready queue to current
-		- change context to current TCB context
-
+			// Join to another thread
+			join(schedular);
 
 		}
 	
