@@ -3,7 +3,8 @@
  *
  * This file contains the implementation of the job queue
  */
-
+#include <ucontext.h>
+#include <pthread.h>
 #define MAX_NUM_NODES 1000
 
 

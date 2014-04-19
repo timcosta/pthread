@@ -1,7 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <ucontext.h>
-#include <pthread.h>
 #include "schedular.c"
 
 // typedef unsigned long int pthread_t;
@@ -15,9 +13,9 @@ Schedular *schedular; // Schedular Object
 struct Schedular * makeSchedular(TCB * main_block);
 
 // Creates a user level thread
-int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void (*start_routine) , void *arg) {
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *) , void *arg) {
 
-
+	printf("create");
 	// Check flag to see if the schedular has been created. If not, create it.
 	if (schedularCreated == 0) {
 

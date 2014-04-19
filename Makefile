@@ -5,15 +5,15 @@ RANLIB = ranlib
 CFLAGS= -g
 SRCS= pthread.c schedular.c
 
-all:: pthread schedular
-	strip pthread
-	strip schedular
+all:: schedular.c test.c
+	$(CC) -o test schedular.c test.c -pthread
+	
 
-pthread: pthread.o
-	$(CC) -o pthread pthread.o 
+test: test.o
+	$(CC) test  -o test.o schedular.o pthread.o
 
-schedular: schedular.o
-	$(CC) -o schedular schedular.o
+test.o: test.c
+	$(CC) -o test.o -c test.c
 
 schedular.o: schedular.c
 	$(CC) -o schedular.o -c schedular.c
