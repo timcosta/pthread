@@ -12,9 +12,10 @@ int schedularCreated = 0; // Flag set to 1 if schedular has been created
 Schedular *schedular; // Schedular Object
 
 
+struct Schedular * makeSchedular(TCB * main_block);
 
 // Creates a user level thread
-int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *), void *arg) {
+int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void (*start_routine) , void *arg) {
 
 
 	// Check flag to see if the schedular has been created. If not, create it.
@@ -40,7 +41,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
     (new_thread->thread_context).uc_stack.ss_size = sizeof(thread_stack);
 
     // Create the context for the new thread
-	makecontext(&ew_thread->thread_context, start_routine, 1, arg);
+	makecontext(&new_thread->thread_context, start_routine, 1, arg);
 
 	// Add this to the ready queue
 	addThread(thread, schedular, new_thread);
@@ -51,13 +52,13 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 
 // Terminate the calling thread. Return value set that can be used by the calling thread when calling pthread_join
-void pthread_exit(void *value_ptr) { 
+void pthread_exit(void (*value_ptr)) { 
 	
 	// Set schedularAction flag to 0 
 	schedular->action = 0;
 
 	// Set the exit val
-	schedular->exit_val = *value_ptr;
+	schedular->exit_val = &value_ptr;
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);

@@ -18,9 +18,9 @@ typedef struct TCB {
 // The Node for queue functionality in schedular
 typedef struct Node {
 	TCB  * thread_cb;
-	Node * next;
-	Node * prev;
-	Node * join_list; // this is a list of all the threads joining on this thread
+	struct Node * next;
+	struct Node * prev;
+	struct Node * join_list; // this is a list of all the threads joining on this thread
 } Node;
 
 
@@ -31,6 +31,7 @@ typedef struct Schedular {
 	int size;
 	int maxSize;
 	int exit_val;
+	int action;
 	pthread_t numCreated;
 	pthread_t join_id;
 	ucontext_t sched_context;
@@ -62,7 +63,7 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 
 		} else {
 			s->tail->next = temp;
-			s->tail->next->prev = q->tail;
+			s->tail->next->prev = s->tail;
 			s->tail = temp;
 		}
 
@@ -82,7 +83,7 @@ void runNextThread(Schedular * s) {
 
 	// Set the new head 
 	s->head = s->head->next;
-	q->head->prev = NULL;
+	s->head->prev = NULL;
 
 	// Set the tail correctly
 	s->tail = s->tail->next;
@@ -155,8 +156,8 @@ Node * findTarget(Node * root, pthread_t id) {
 	if (root->thread_cb->thread_id == id) return root;
 
 	// Recursively search for the correct node
-	Node* n = findTarget(root->next);
-	Node* j = findTarget(root->join_list);
+	Node* n = findTarget(root->next,id);
+	Node* j = findTarget(root->join_list,id);
 
 	// Return recursive result
 	return (j==NULL) ? n : j;
