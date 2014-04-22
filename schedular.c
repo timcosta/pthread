@@ -91,6 +91,9 @@ void runNextThread(Schedular * s) {
 	s->tail->next = NULL;
 
 
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
@@ -142,6 +145,9 @@ void currExit(Schedular * s) {
 	// Decrement the size of the queue
 	s->size--;
 
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context); 
 
@@ -172,27 +178,41 @@ void join(Schedular * s) {
 	// Find the thread we are joing on
 	Node * temp = findTarget(s->head, s->join_id);
 
-	// Set temp to be the joining list
-	temp = temp->join_list;
+	if (temp != NULL) {
 
-	// Add current TCB to back of its joining queue
-	if (temp == NULL) {
-		temp = s->head; 
+		// Set temp to be the joining list
+		temp = temp->join_list;
+
+		// Add current TCB to back of its joining queue
+		if (temp == NULL) {
+			temp = s->head; 
+		} else {
+			while (temp->next != NULL) temp = temp->next;
+		}
+
+		temp->next = s->head;
+
+		// Set head of ready queue to current
+		s->head = s->head->next;
+		s->head->prev = NULL;
+
+		// Make the end of the join list NULL
+		temp->next->next = NULL;
+
+		// If a thread terminates, this calls pthread exit for it 
+		schedular->action = 0;
+
+		// Change context to current TCB context
+		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+
 	} else {
-		while (temp->next != NULL) temp = temp->next;
+
+		// If a thread terminates, this calls pthread exit for it 
+		schedular->action = 0;
+
+		// Change context to current TCB context
+		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 	}
-
-	temp->next = s->head;
-
-	// Set head of ready queue to current
-	s->head = s->head->next;
-	s->head->prev = NULL;
-
-	// Make the end of the join list NULL
-	temp->next->next = NULL;
-
-	// Change context to current TCB context
-	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 }
 
 // Have we reached the maximum number of threads

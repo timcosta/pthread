@@ -9,6 +9,9 @@
 int schedularCreated = 0; // Flag set to 1 if schedular has been created
 Schedular *schedular; // Schedular Object
 
+// Schedular's context stack 
+char sched_stack[16384];
+
 
 struct Schedular * makeSchedular(TCB * main_block);
 
@@ -56,7 +59,7 @@ void pthread_exit(void (*value_ptr)) {
 	schedular->action = 0;
 
 	// Set the exit val
-	schedular->exit_val = &value_ptr;
+	schedular->exit_val = *value_ptr;
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
@@ -138,12 +141,10 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	s->tail = NULL;
 	s->action = -1;
 
-	// Schedular's context stack 
-	char sched_stack[16384];
 
 	// Initialise the schedular context. uc_link points to main_context
 	getcontext(&s->sched_context);
-    (s->sched_context).uc_link          = &main_block->thread_context;
+    (s->sched_context).uc_link          = 0; // Schedular doesn't link back to any particular thread
     (s->sched_context).uc_stack.ss_sp   = sched_stack;
     (s->sched_context).uc_stack.ss_size = sizeof(sched_stack);
  
@@ -152,6 +153,10 @@ struct Schedular * makeSchedular(TCB * main_block) {
 
 	// dummy pthread_t for the main
 	pthread_t thread;
+
+	// Seth the link back to schedular when the main terminates
+	getcontext(&main_block->thread_context);
+	(main_block->thread_context).uc_link = &s->sched_context;
 
 	// Add the main context to the head of the run queue list == it is running
 	addThread(&thread, s, main_block);
