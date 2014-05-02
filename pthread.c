@@ -164,3 +164,90 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	// Return the initialized queue
 	return s;
 }
+
+
+
+
+/************************ SYNCHRONIZATION ****************************/
+
+
+//// Mutex //////
+
+
+// Initialize the mutex
+int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
+
+	// Fill in
+
+	return 0;
+}
+
+// Destroy the mutex
+int pthread_mutex_destroy(pthread_mutex_t *mutex) {
+	
+	// Fill in
+
+	return 0;
+}
+
+// Lock the mutex
+int pthread_mutex_lock(pthread_mutex_t *mutex) {
+
+	// Fill in
+
+	return 0;
+}
+
+// Unlock the mutex
+int pthread_mutex_unlock(pthread_mutex_t *mutex) {
+
+	// Fill in
+
+	return 0;
+}
+
+
+/////////// Conditional Vars /////////////
+
+
+// Initialize the conditional variable
+int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
+
+	// Fill in
+
+	return 0;
+}
+
+// Destroy the conditional variable
+int pthread_cond_destroy(pthread_cond_t *cond) {
+
+	// Fill in
+
+	return 0;
+}
+
+
+// Wait until another thread wakes up this one
+int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
+
+	// Fill in
+
+	return 0;
+}
+
+// Wake up the next thread waiting on the conditional variable 
+int pthread_cond_signal(pthread_cond_t *cond) {
+
+	// Fill in
+
+	return 0;
+}
+
+
+// Wake up all threads waiting on the conditional variable 
+int pthread_cond_broadcast(pthread_cond_t *cond) {
+
+	// Fill in
+
+	return 0;
+}
