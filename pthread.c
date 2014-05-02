@@ -4,7 +4,6 @@
 
 // typedef unsigned long int pthread_t;
 
-
 // Global Vars
 int schedularCreated = 0; // Flag set to 1 if schedular has been created
 Schedular *schedular; // Schedular Object
@@ -141,7 +140,6 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	s->tail = NULL;
 	s->action = -1;
 
-
 	// Initialise the schedular context. uc_link points to main_context
 	getcontext(&s->sched_context);
     (s->sched_context).uc_link          = 0; // Schedular doesn't link back to any particular thread
@@ -213,7 +211,11 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 // Initialize the conditional variable
 int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 
-	// Fill in
+	// Create the queue for this cond. var
+
+	// Set the index(lock) for the cond. var. for where it is in the queue array
+
+	// Add the queue to the queue array
 
 	return 0;
 }
@@ -221,7 +223,10 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 // Destroy the conditional variable
 int pthread_cond_destroy(pthread_cond_t *cond) {
 
-	// Fill in
+	// Delete the node memory allocated for the cond. var queue
+
+	// Delete the memory allocated for the conditional variable 
+	free(cond);
 
 	return 0;
 }
@@ -230,7 +235,14 @@ int pthread_cond_destroy(pthread_cond_t *cond) {
 // Wait until another thread wakes up this one
 int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 
-	// Fill in
+	// Give up the mutex lock
+	pthread_mutex_unlock(mutex);
+
+	// Set the schedular cond. var index(lock) to the correct value
+
+	// Set the correct action for the schedular
+
+	// Add the current running thread to the queue of the cond. var(context switch)
 
 	return 0;
 }
@@ -238,7 +250,11 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 // Wake up the next thread waiting on the conditional variable 
 int pthread_cond_signal(pthread_cond_t *cond) {
 
-	// Fill in
+	// Set the schedular cond. var index to the correct value
+
+	// Set the correct action for the schedular 
+
+	// Take off the first thread from the queue of the cond. var and add to the ready queue(context switch)
 
 	return 0;
 }
@@ -247,7 +263,11 @@ int pthread_cond_signal(pthread_cond_t *cond) {
 // Wake up all threads waiting on the conditional variable 
 int pthread_cond_broadcast(pthread_cond_t *cond) {
 
-	// Fill in
+	// Set the schedular cond. var index to the correct value
+
+	// Set the correct action for the schedular 
+
+	// Take off the each thread from the queue of the cond. var and add to the ready queue(context switch)
 
 	return 0;
 }

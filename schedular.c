@@ -5,8 +5,10 @@
  */
 #include <ucontext.h>
 #include <pthread.h>
-#define MAX_NUM_NODES 1000
 
+// Constants
+#define MAX_NUM_NODES 1000
+#define MAX_NUM_COND_VARS 1000
 
 
 // TCB(Thread control Block)
@@ -25,17 +27,28 @@ typedef struct Node {
 } Node;
 
 
+// Array of linked lists(map) for conditional variable queues(size of the max number set)
+// Trade off: We are alocating this memory for improved speed when adding threads to the cond. var waiting queues
+struct Node condVarMap[MAX_NUM_COND_VARS];
+
 // The Schedular Struct
 typedef struct Schedular {
+
 	struct Node * head; // The current executing context
 	struct Node * tail; // Back of the queue
 	int size;
 	int maxSize;
+
+	// Vals for thread lib
 	int exit_val;
 	int action;
 	pthread_t numCreated;
 	pthread_t join_id;
 	ucontext_t sched_context;
+
+	// Vals for synchronization
+	int nextCondId; // Id of the next cond. var in the cond. var map
+	int currCondVarId;  // Id of the cond. var under operation
 } Schedular;
 
 
@@ -74,6 +87,7 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 	}
 }
 
+// Note to Ryan: Check code from here down...
 
 // Run the next thread in the ready queue
 void runNextThread(Schedular * s) {
@@ -213,6 +227,12 @@ void join(Schedular * s) {
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 	}
+}
+
+// Add to the back of a linked list
+void addToBack(Node * n, Schedular * s) {
+
+
 }
 
 // Have we reached the maximum number of threads
