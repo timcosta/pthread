@@ -87,22 +87,25 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 	}
 }
 
-// Note to Ryan: Check code from here down...
 
 // Run the next thread in the ready queue
 void runNextThread(Schedular * s) {
 
-	// Add current TCB to the back of queue
-	s->tail->next = s->head;
-	s->tail->next->prev = s->tail;
+	// if there is more than one node on the ready queue, move the head to the back
+	if(s->tail != s->head) { 
 
-	// Set the new head 
-	s->head = s->head->next;
-	s->head->prev = NULL;
+		// Add current TCB to the back of queue
+		s->tail->next = s->head;
+		s->tail->next->prev = s->tail;
 
-	// Set the tail correctly
-	s->tail = s->tail->next;
-	s->tail->next = NULL;
+		// Set the new head 
+		s->head = s->head->next;
+		s->head->prev = NULL;
+
+		// Set the tail correctly
+		s->tail = s->tail->next;
+		s->tail->next = NULL;
+	}
 
 
 	// If a thread terminates, this calls pthread exit for it 
@@ -162,8 +165,11 @@ void currExit(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	schedular->action = 0;
 
-	// Change context to new TCB context
-	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context); 
+	// Unless the last thread has exited, swap back to user mode
+	if (s->head != NULL) {
+		// Change context to new TCB context
+		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+	} 
 
 }
 
