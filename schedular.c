@@ -29,7 +29,7 @@ typedef struct Node {
 
 // Array of linked lists(map) for conditional variable queues(size of the max number set)
 // Trade off: We are alocating this memory for improved speed when adding threads to the cond. var waiting queues
-struct Node condVarMap[MAX_NUM_COND_VARS];
+struct Node *condVarMap[MAX_NUM_COND_VARS];
 
 // The Schedular Struct
 typedef struct Schedular {
@@ -208,16 +208,16 @@ void join(Schedular * s) {
 			temp = s->head; 
 		} else {
 			while (temp->next != NULL) temp = temp->next;
+			temp->next = s->head;
+			temp = temp->next;
 		}
-
-		temp->next = s->head;
 
 		// Set head of ready queue to current
 		s->head = s->head->next;
 		s->head->prev = NULL;
 
 		// Make the end of the join list NULL
-		temp->next->next = NULL;
+		temp->next = NULL;
 
 		// If a thread terminates, this calls pthread exit for it 
 		schedular->action = 0;
@@ -235,10 +235,88 @@ void join(Schedular * s) {
 	}
 }
 
-// Add to the back of a linked list
-void addToBack(Node * n, Schedular * s) {
+// Add the current thread to the correct conditional variable queue
+void waitOnCond (Schedular *s) {
 
+	// Get the first node in the queue 
+	Node * temp = condVarMap[s->currCondVarId];
 
+	// Add the current thread to the back of the list
+	if (temp == NULL) {
+		temp = s->head;
+	} else {
+		while(temp->next != NULL) temp = temp->next;
+		temp->next = s->head;
+		temp = temp->next;
+	}
+
+	// Set head of ready queue to current
+	s->head = s->head->next;
+	s->head->prev = NULL;
+
+	// Make the end of the join list NULL
+	temp->next = NULL;
+
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+
+}
+
+// Take the head of the cond. var queue and put it back on the ready queue
+void signal(Schedular *s) {
+
+	// Get the head of the queue
+	Node * temp = condVarMap[s->currCondVarId];
+
+	if (temp != NULL) {
+		
+		addToReadyTail(temp);
+	}
+
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+}
+
+// Add all threads waiting on the cond. variable back on the ready queue
+void broadcast (Schedular *s) {
+
+	// Get the head of the queue
+	Node * temp = condVarMap[s->currCondVarId];
+
+	// Add all threads to the back of the ready queue
+	while (temp != NULL) {
+		
+		addToReadyTail(temp);
+
+		temp = condVarMap[s->currCondVarId];
+	}
+
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+}
+
+// Adds a node from a cond. var queue to the back of the ready queue
+void addToReadyTail(Node* n) {
+
+	// Add this to the back of the ready queue
+	s->tail->next = n;
+	s->tail->next->prev = s->tail;
+	s->tail = n;
+
+	// Set the head of the queue to the next value
+	condVarMap[s->currCondVarId] = n->next;
+
+	// End of the list points to NULL
+	s->tail->next = NULL;
 }
 
 // Have we reached the maximum number of threads

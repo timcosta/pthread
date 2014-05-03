@@ -119,6 +119,17 @@ void schedule(void) {
 			// Join to another thread
 			join(schedular);
 
+		} else if (schedular->action == 3) {
+			// Add the current thread to the queue of the specified cond. variable
+			waitOnCond(schedular);
+
+		} else if (schedular->action == 4) {
+			// Take one thread off the waiting queue and add it to the ready queue
+			signal(schedular);
+		} else if (schedular->action == 5) {
+
+			// Add all threads waiting on a specific cond. variable to the back of the queue
+			broadcast(schedular);
 		}
 	
 	} 
@@ -139,6 +150,7 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	s->head = NULL;
 	s->tail = NULL;
 	s->action = -1;
+	s->nextCondId = 0;
 
 	// Initialise the schedular context. uc_link points to main_context
 	getcontext(&s->sched_context);
@@ -211,9 +223,23 @@ int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 // Initialize the conditional variable
 int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 
+	// Check if the schedular has been built. If not build it
+	if (schedularCreated == 0) {
+
+		// Create TCB for main
+		TCB * main_block =  (TCB *) malloc(sizeof(TCB));
+
+		schedular = makeSchedular(main_block);
+		schedularCreated = 1;
+	}
+
+	// Check if you can create another conditional variable
+	if (schedular->nextCondId == MAX_NUM_COND_VARS) return -1;
+
 	// Create the queue for this cond. var
 
 	// Set the index(lock) for the cond. var. for where it is in the queue array
+	cond->__data->lock = schedular->nextCondId++;
 
 	// Add the queue to the queue array
 
@@ -239,10 +265,13 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	pthread_mutex_unlock(mutex);
 
 	// Set the schedular cond. var index(lock) to the correct value
+	schedular->currCondVarId = cond->__data->lock;
 
 	// Set the correct action for the schedular
+	schedular->action = 3;
 
 	// Add the current running thread to the queue of the cond. var(context switch)
+	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
 	return 0;
 }
@@ -251,10 +280,14 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 int pthread_cond_signal(pthread_cond_t *cond) {
 
 	// Set the schedular cond. var index to the correct value
+	schedular->currCondVarId = cond->__data->lock;
 
 	// Set the correct action for the schedular 
+	schedular->action = 4;
 
 	// Take off the first thread from the queue of the cond. var and add to the ready queue(context switch)
+	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
+
 
 	return 0;
 }
@@ -264,10 +297,13 @@ int pthread_cond_signal(pthread_cond_t *cond) {
 int pthread_cond_broadcast(pthread_cond_t *cond) {
 
 	// Set the schedular cond. var index to the correct value
+	schedular->currCondVarId = cond->__data->lock;
 
 	// Set the correct action for the schedular 
+	schedular->action = 5;
 
 	// Take off the each thread from the queue of the cond. var and add to the ready queue(context switch)
+	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
 	return 0;
 }
