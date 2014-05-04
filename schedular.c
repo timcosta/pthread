@@ -114,7 +114,7 @@ void runNextThread(Schedular * s) {
 
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -168,7 +168,7 @@ void currExit(Schedular * s) {
 	s->size--;
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Unless the last thread has exited, swap back to user mode
 	if (s->head != NULL) {
@@ -225,7 +225,7 @@ void join(Schedular * s) {
 		temp->next = NULL;
 
 		// If a thread terminates, this calls pthread exit for it 
-		schedular->action = 0;
+		s->action = 0;
 
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -233,7 +233,7 @@ void join(Schedular * s) {
 	} else {
 
 		// If a thread terminates, this calls pthread exit for it 
-		schedular->action = 0;
+		s->action = 0;
 
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -263,7 +263,7 @@ void waitOnCond (Schedular *s) {
 	temp->next = NULL;
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -282,7 +282,7 @@ void signal(Schedular *s) {
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -303,7 +303,7 @@ void broadcast (Schedular *s) {
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -331,7 +331,7 @@ void lock(Schedular *s) {
 	temp->next = NULL;
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -348,7 +348,7 @@ void unlock(Schedular *s) {
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
-	schedular->action = 0;
+	s->action = 0;
 
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
