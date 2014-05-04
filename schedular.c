@@ -271,7 +271,7 @@ void waitOnCond (Schedular *s) {
 }
 
 // Take the head of the cond. var queue and put it back on the ready queue
-void signal(Schedular *s) {
+void sig(Schedular *s) {
 
 	// Get the head of the queue
 	Node * temp = condVarMap[s->currCondVarId];
@@ -344,7 +344,7 @@ void unlock(Schedular *s) {
 
 	if (temp != NULL) {
 		
-		addToReadyTail(temp);
+		addToReadyTail(temp,s);
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
@@ -355,7 +355,7 @@ void unlock(Schedular *s) {
 }
 
 // Adds a node from a cond. var queue to the back of the ready queue
-void addToReadyTail(Node* n) {
+void addToReadyTail(Node* n,Schedular *s) {
 
 	// Add this to the back of the ready queue
 	s->tail->next = n;

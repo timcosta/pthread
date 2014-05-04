@@ -125,7 +125,7 @@ void schedule(void) {
 
 		} else if (schedular->action == 4) {
 			// Take one thread off the waiting queue and add it to the ready queue
-			signal(schedular);
+			sig(schedular);
 		} else if (schedular->action == 5) {
 
 			// Add all threads waiting on a specific cond. variable to the back of the queue
