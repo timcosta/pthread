@@ -163,7 +163,7 @@ void currExit(Schedular * s) {
 		s->head->prev = NULL;
 	}
 	printf("e1\n");
-	free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
+	//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
 	printf("e2\n");
 	free(temp->thread_cb); // Free the TCB itself 
 	printf("e3\n");
