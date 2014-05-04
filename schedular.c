@@ -235,15 +235,14 @@ void join(Schedular * s) {
 
 		printf("temp not null\n");
 
-		// Set temp to be the joining list
-		temp = temp->join_list;
 
 		// Add current TCB to back of its joining queue
-		if (temp == NULL) {
+		if (temp->join_list == NULL) {
 			printf("jo1\n");
-			temp = s->head; 
+			temp->join_list = s->head; 
 		} else {
 			printf("jo2\n");
+			temp = temp->join_list;
 			while (temp->next != NULL) temp = temp->next;
 			temp->next = s->head;
 			temp = temp->next;
