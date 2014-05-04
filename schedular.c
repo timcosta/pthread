@@ -137,6 +137,7 @@ void currExit(Schedular * s) {
 	
 	Node * temp = s->head->join_list;
 
+
 	// Add list of joins from current TCB to back of ready queue
 	while (temp != NULL) {
 
@@ -226,6 +227,9 @@ void join(Schedular * s) {
 
 	// Find the thread we are joing on
 	Node * temp = findTarget(s->head, s->join_id);
+
+	printf("Id of found thread(should be 2): %d",temp->thread_cb->thread_id);
+	printf("Id of head(should be 1): %d",s->head->thread_cb->thread_id);
 
 	if (temp != NULL) {
 
