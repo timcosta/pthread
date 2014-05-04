@@ -22,7 +22,9 @@ void main(void) {
 
 
 	pthread_create(&t1, NULL, &first_message, NULL);
+	printf("created1\n");
 	pthread_create(&t2, NULL, &second_message, NULL);
+	printf("created2\n");
 	printf("Starting...\n");
 	pthread_join(&t1,NULL);
 	pthread_join(&t2,NULL);

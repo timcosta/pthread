@@ -81,19 +81,25 @@ int pthread_yield(void) {
 
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
-
+	printf("j1\n");
 	// Set schedular action flag to 2 
 	schedular->action = 2;
 
 	// Set schedular joining flag
 	schedular->join_id = thread;
 
+	printf("j2\n");
+
 	// swap to schedular context to perform join
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
+
+	printf("j3\n");
 
 	// Set the join val
 	if(*value_ptr != NULL) *value_ptr = schedular->head->thread_cb->join_val;
 	
+	printf("j4\n");
+
 	return 0;
 }
 
