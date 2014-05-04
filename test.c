@@ -27,8 +27,8 @@ void main(void) {
 	printf("Starting...\n");
 	pthread_join(t1,NULL);
 	int* val;
-	pthread_join(t2,(void*)&val);
-	printf("val from 2: %d",val);
+	pthread_join(t2,(void**)&(val));
+	printf("val from 2: %d\n",val);
 	printf("last action\n");
 	exit(0);
 }
