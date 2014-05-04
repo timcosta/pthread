@@ -184,6 +184,9 @@ void currExit(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
+	/* * * */
+	printf("Exiting T2\n");
+	printReadyQueue(s);
 
 	// Unless the last thread has exited, swap back to user mode
 	if (s->head != NULL) {
