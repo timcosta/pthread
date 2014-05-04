@@ -228,8 +228,8 @@ void join(Schedular * s) {
 	// Find the thread we are joing on
 	Node * temp = findTarget(s->head, s->join_id);
 
-	printf("Id of found thread(should be 2): %d",temp->thread_cb->thread_id);
-	printf("Id of head(should be 1): %d",s->head->thread_cb->thread_id);
+	printf("Id of found thread(should be 2): %d\n",temp->thread_cb->thread_id);
+	printf("Id of head(should be 1): %d\n",s->head->thread_cb->thread_id);
 
 	if (temp != NULL) {
 
