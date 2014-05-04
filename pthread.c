@@ -58,7 +58,7 @@ void pthread_exit(void *value_ptr) {
 	schedular->action = 0;
 
 	// Set the exit val
-	schedular->exit_val = *value_ptr;
+	schedular->exit_val = (int)*value_ptr;
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
@@ -219,8 +219,8 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 	// Create the queue for this cond. var
 
 	// Set the index(count) for the mutex. for where it is in the queue array
-	mutex->__data.count = schedular->nextMutexId++;
-	mutex->__data.lock = 0;
+	mutex->__data.__count = schedular->nextMutexId++;
+	mutex->__data.__lock = 0;
 
 	return 0;
 
@@ -238,7 +238,7 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 int pthread_mutex_lock(pthread_mutex_t *mutex) {
 
 	if(mutex->__data.__lock == 1) {
-		s->action = 7;
+		schedular->action = 7;
 		schedular->currMutexVarId = mutex->__data.__count;
 		swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	}
@@ -250,7 +250,7 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
 // Unlock the mutex
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 
-	s->action = 6;
+	schedular->action = 6;
 	schedular->currMutexVarId = mutex->__data.__count;
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	mutex->__data.__lock = 0;
