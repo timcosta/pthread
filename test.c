@@ -26,7 +26,9 @@ void main(void) {
 	pthread_create(&t2, NULL, &second_message, NULL);
 	printf("Starting...\n");
 	pthread_join(t1,NULL);
-	pthread_join(t2,NULL);
+	int* val;
+	pthread_join(t2,(void*)&val);
+	printf("val from 2: %d",val);
 	printf("last action\n");
 	exit(0);
 }
