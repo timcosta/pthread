@@ -86,7 +86,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	if(schedular->head == NULL) {
 		printf("sched head null\n");
 	}else{
-		printf("sched head: %d\n",schedular->head->thread_cb->thread_id);
+		printf("sched head->next: %d\n",schedular->head->next->thread_cb->thread_id);
 	}
 	printf("j1\n");
 	// Set schedular action flag to 2 
