@@ -185,10 +185,16 @@ void currExit(Schedular * s) {
 Node * findTarget(Node * root, pthread_t id) {
 
 	// Check if we hit a dead end
-	if (root == NULL) return NULL;
+	if (root == NULL) {
+		printf("root null\n");
+		return NULL;
+	}
 
 	// Check if we have the correct node
-	if (root->thread_cb->thread_id == id) return root;
+	if (root->thread_cb->thread_id == id) {
+		printf("returning root\n");
+		return root;
+	}
 
 	// Recursively search for the correct node
 	Node* n = findTarget(root->next,id);
