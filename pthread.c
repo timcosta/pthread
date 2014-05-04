@@ -187,6 +187,32 @@ struct Schedular * makeSchedular(TCB * main_block) {
 // Initialize the mutex
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
 
+	// count as index
+	// lock is either 0(free) or 1(locked)
+
+	// Check if the schedular has been built. If not build it
+	if (schedularCreated == 0) {
+
+		// Create TCB for main
+		TCB * main_block =  (TCB *) malloc(sizeof(TCB));
+
+		schedular = makeSchedular(main_block);
+		schedularCreated = 1;
+	}
+
+	// Check if you can create another mutex
+	if (schedular->nextMutexId == MAX_NUM_MUTEX_VARS) return -1;
+
+	// Create the queue for this cond. var
+
+	// Set the index(count) for the mutex. for where it is in the queue array
+	mutex->__data->count = schedular->nextMutexId++;
+	mutex->__data->lock = 0;
+
+	// Add the queue to the queue array
+
+	return 0;
+
 }
 
 // Destroy the mutex

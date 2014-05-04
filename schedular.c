@@ -9,6 +9,7 @@
 // Constants
 #define MAX_NUM_NODES 1000
 #define MAX_NUM_COND_VARS 1000
+#define MAX_NUM_MUTEX_VARS 1000
 
 
 // TCB(Thread control Block)
@@ -30,6 +31,7 @@ typedef struct Node {
 // Array of linked lists(map) for conditional variable queues(size of the max number set)
 // Trade off: We are alocating this memory for improved speed when adding threads to the cond. var waiting queues
 struct Node *condVarMap[MAX_NUM_COND_VARS];
+struct Node *mutexVarMap[MAX_NUM_MUTEX_VARS];
 
 // The Schedular Struct
 typedef struct Schedular {
@@ -49,6 +51,9 @@ typedef struct Schedular {
 	// Vals for synchronization
 	int nextCondId; // Id of the next cond. var in the cond. var map
 	int currCondVarId;  // Id of the cond. var under operation
+
+	int nextMutexId; // Id of the next cond. var in the cond. var map
+	int currMutexVarId;  // Id of the cond. var under operation
 } Schedular;
 
 
