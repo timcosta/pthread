@@ -187,25 +187,65 @@ struct Schedular * makeSchedular(TCB * main_block) {
 // Initialize the mutex
 int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) {
 
-	// Fill in
-
-	return 0;
+	mutex->lock = 0;
+	mutex->sig = _PTHREAD_MUTEX_SIG;
+	if (attr) {
+		if(attr->sig != _PTHREAD_MUTEX_ATTR_SIG) {
+			return EINVAL;
+		}
+		mutex->prioceiling = attr->prioceiling;
+		mutex->protocol = attr->protocol;
+	}else{
+		mutex->prioceiling = _PTHREAD_DEFAULT_PRIOCEILING;
+		mutex->protocol = _PTHREAD_DEFAULT_PROTOCOL;
+	}
+	mutex->owner = (pthread_t)NULL;
+	mutex->next = (pthread_mutex_t *)NULL;
+	mutex->prev = (pthread_mutex_t *)NULL;
+	mutex->busy = (pthread_cond_t *)NULL;
+	mutex->waiters = 0;
+	mutex->cond_lock = 0;
+	mutex->sem = MACH_LOCK_NULL;
+	return ESUCCESS;
 }
 
 // Destroy the mutex
 int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 	
-	// Fill in
+	if(mutex->sig != _PTHREAD_MUTEX_SIG) return EINVAL;
+	if(mutex->owner != (pthread_t)NULL || mutex->busy != (pthread_cond_t *)NULL) return EBUSY;
+	mutex->sig = _PTHREAD_NO_SIG;
+	return ESUCCESS;
 
-	return 0;
 }
 
 // Lock the mutex
 int pthread_mutex_lock(pthread_mutex_t *mutex) {
 
-	// Fill in
+	kern_return_t res;
+	if(mutex->sig == _PTHREAD_MUTEX_SIG_init) {
+		int resp;
+		if(resp=pthread_mutex_init(mutex,NULL)) return resp;
+	}
+	if(mutex->sig != _PTHREAD_MUTEX_SIG) return EINVAL;
+	mutex->lock = 1;
+	if(mutex->waiters || mutex->owner != (pthread_t)NULL) {
+		mutex->waiters++;
+	if(mutex->sem == MACH_PORT_NULL) mutex->sem = new_sem_from_pool();
+	mutex->lock = 0;
+	do {
+		PTHREAD_MACH_CALL(semaphore_wait(mutex->sem),res);
+	}while(res==KERN_ABORTED);
+	mutex->lock = 1;
+	mutex->waiters--;
+	if(mutex->waiters==0){
+		return_sem_to_pool(mutex->sem);
+		mutex->sem = MACH_PORT_NULL;
+	}
+	if(mutex->cond_lock) mutex->cond_lock = 0;
+	mutex->lock = 0;
+	return ESUCCESS;
 
-	return 0;
 }
 
 // Unlock the mutex
