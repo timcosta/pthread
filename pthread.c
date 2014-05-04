@@ -130,6 +130,12 @@ void schedule(void) {
 
 			// Add all threads waiting on a specific cond. variable to the back of the queue
 			broadcast(schedular);
+		}else if (schedular->action == 6) {
+			// Take one thread off the mutex waiting queue and add it to the ready queue
+			unlock(schedular);
+		} else if (schedular->action == 7) {
+			// Add all threads waiting on a specific mutex to the back of the queue
+			lock(schedular);
 		}
 	
 	} 
@@ -151,6 +157,7 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	s->tail = NULL;
 	s->action = -1;
 	s->nextCondId = 0;
+	s->nextMutexId = 0;
 
 	// Initialise the schedular context. uc_link points to main_context
 	getcontext(&s->sched_context);
@@ -209,8 +216,6 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 	mutex->__data->count = schedular->nextMutexId++;
 	mutex->__data->lock = 0;
 
-	// Add the queue to the queue array
-
 	return 0;
 
 }
@@ -218,22 +223,33 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 // Destroy the mutex
 int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 	
+	free(mutex);
+	return 0;
 
 }
 
 // Lock the mutex
 int pthread_mutex_lock(pthread_mutex_t *mutex) {
 
-
+	if(mutex->__data->lock == 1) {
+		s->action = 7;
+		schedular->currMutexVarId = mutex->__data->count;
+		swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
+	}
+	mutex->__data->lock = 1;
+	return 0;
 
 }
 
 // Unlock the mutex
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 
-	// Fill in
-	mutex->lock = 0;
-	return 1;
+	s->action = 6;
+	schedular->currMutexVarId = mutex->__data->count;
+	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
+	mutex->__data->lock = 0;
+	return 0;
+
 }
 
 

@@ -52,8 +52,8 @@ typedef struct Schedular {
 	int nextCondId; // Id of the next cond. var in the cond. var map
 	int currCondVarId;  // Id of the cond. var under operation
 
-	int nextMutexId; // Id of the next cond. var in the cond. var map
-	int currMutexVarId;  // Id of the cond. var under operation
+	int nextMutexId; // Id of the next mutex n the mutex var map
+	long int currMutexVarId;  // Id of the mutex var under operation
 } Schedular;
 
 
@@ -300,6 +300,51 @@ void broadcast (Schedular *s) {
 		addToReadyTail(temp);
 
 		temp = condVarMap[s->currCondVarId];
+	}
+
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+}
+
+void lock(Schedular *s) {
+
+	// Get the first node in the queue 
+	Node * temp = mutexVarMap[s->currMutexVarId];
+
+	// Add the current thread to the back of the list
+	if (temp == NULL) {
+		temp = s->head;
+	} else {
+		while(temp->next != NULL) temp = temp->next;
+		temp->next = s->head;
+		temp = temp->next;
+	}
+
+	// Set head of ready queue to current
+	s->head = s->head->next;
+	s->head->prev = NULL;
+
+	// Make the end of the join list NULL
+	temp->next = NULL;
+
+	// If a thread terminates, this calls pthread exit for it 
+	schedular->action = 0;
+
+	// Change context to current TCB context
+	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
+
+}
+
+void unlock(Schedular *s) {
+	// Get the head of the queue
+	Node * temp = mutexVarMap[s->currMutexVarId];
+
+	if (temp != NULL) {
+		
+		addToReadyTail(temp);
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
