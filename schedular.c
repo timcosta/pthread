@@ -399,7 +399,7 @@ void printReadyQueue(Schedular *s) {
 		print("%d",temp->thread_cb->thread_id);
 		temp = temp->next;
 	}
-	printf("NULL\n")
+	printf("NULL\n");
 
 }
 
