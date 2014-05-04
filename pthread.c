@@ -92,7 +92,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
 	// Set the join val
-	*value_ptr = schedular->head->thread_cb->join_val;
+	if(*value_ptr != NULL) *value_ptr = schedular->head->thread_cb->join_val;
 	
 	return 0;
 }
