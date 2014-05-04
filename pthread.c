@@ -58,7 +58,7 @@ void pthread_exit(void *value_ptr) {
 	schedular->action = 0;
 
 	// Set the exit val
-	schedular->exit_val = (int)*value_ptr;
+	schedular->exit_val = *value_ptr;
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
