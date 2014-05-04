@@ -85,11 +85,6 @@ int pthread_yield(void) {
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
 	printf("join on thread %d\n",thread);
-	if(schedular->head == NULL) {
-		printf("sched head null\n");
-	}else{
-		printf("sched head->next: %d\n",schedular->head->next->thread_cb->thread_id);
-	}
 	printf("j1\n");
 	// Set schedular action flag to 2 
 	schedular->action = 2;
