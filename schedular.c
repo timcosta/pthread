@@ -172,9 +172,9 @@ void currExit(Schedular * s) {
 	}
 	if(s->voluntaryExit == 1) {
 		printf("e1\n");
-		free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
+		//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
 		//printf("e2: %d\n",temp->thread_cb->thread_id);
-		free(temp->thread_cb); // Free the TCB itself 
+		//free(temp->thread_cb); // Free the TCB itself 
 		//printf("e3\n");
 		free(temp); // delete the memory of this node
 		//printf("e4\n");
