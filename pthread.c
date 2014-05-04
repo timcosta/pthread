@@ -234,7 +234,7 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 	}
 
 	// Check if you can create another conditional variable
-	if (schedular->nextCondId == MAX_NUM_COND_VARS) return -1;c
+	if (schedular->nextCondId == MAX_NUM_COND_VARS) return -1;
 
 	// Create the queue for this cond. var
 
