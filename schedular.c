@@ -44,6 +44,7 @@ typedef struct Schedular {
 	// Vals for thread lib
 	int exit_val;
 	int action;
+	int voluntaryExit;
 	pthread_t numCreated;
 	pthread_t join_id;
 	ucontext_t sched_context;
@@ -162,18 +163,21 @@ void currExit(Schedular * s) {
 		s->head = s->head->next;
 		s->head->prev = NULL;
 	}
-	printf("e1\n");
-	//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
-	printf("e2: %d\n",temp->thread_cb->thread_id);
-	if(temp->thread_cb != NULL) free(temp->thread_cb); // Free the TCB itself 
-	printf("e3\n");
-	free(temp); // delete the memory of this node
-	printf("e4\n");
+	if(s->voluntaryExit == 1) {
+		printf("e1\n");
+		//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
+		printf("e2: %d\n",temp->thread_cb->thread_id);
+		free(temp->thread_cb); // Free the TCB itself 
+		printf("e3\n");
+		free(temp); // delete the memory of this node
+		printf("e4\n");
+	}
 	// Decrement the size of the queue
 	s->size--;
-
+	s->voluntaryExit = 0;
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
+
 
 	// Unless the last thread has exited, swap back to user mode
 	if (s->head != NULL) {

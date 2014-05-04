@@ -58,6 +58,7 @@ void pthread_exit(void *value_ptr) {
 	
 	// Set schedularAction flag to 0 
 	schedular->action = 0;
+	schedular->voluntaryExit = 1;
 
 	// Set the exit val
 	schedular->exit_val = *((int*)value_ptr);
@@ -170,6 +171,7 @@ struct Schedular * makeSchedular(TCB * main_block) {
 	s->head = NULL;
 	s->tail = NULL;
 	s->action = -1;
+	s->voluntaryExit = 0;
 	s->nextCondId = 0;
 	s->nextMutexId = 0;
 
