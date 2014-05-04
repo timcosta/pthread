@@ -164,7 +164,7 @@ void currExit(Schedular * s) {
 	}
 	printf("e1\n");
 	//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
-	printf("e2\n");
+	printf("e2: %d\n",temp->thread_cb->thread_id);
 	if(temp->thread_cb != NULL) free(temp->thread_cb); // Free the TCB itself 
 	printf("e3\n");
 	free(temp); // delete the memory of this node
