@@ -26,6 +26,7 @@ void main(void) {
 	printf("Starting...\n");
 	pthread_join(t1,NULL);
 	pthread_join(t2,NULL);
+	printf("last action");
 	exit(0);
 }
 
