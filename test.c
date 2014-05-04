@@ -12,7 +12,8 @@ void * second_message() {
 	printf("Second\n");
 	pthread_yield();
 	printf("Fourth\n");
-	pthread_exit(1);
+	int *val = 5;
+	pthread_exit(val);
 }
 
 void main(void) {
