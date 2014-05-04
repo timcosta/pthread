@@ -96,7 +96,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	printf("j3\n");
 
 	// Set the join val
-	if(*value_ptr != NULL) *value_ptr = schedular->head->thread_cb->join_val;
+	if(value_ptr != NULL) **value_ptr = schedular->head->thread_cb->join_val;
 	
 	printf("j4\n");
 
