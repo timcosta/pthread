@@ -136,6 +136,8 @@ void currExit(Schedular * s) {
 	// Add list of joins from current TCB to back of ready queue
 	while (temp != NULL) {
 
+		printf("adding back to ready queue\n");
+
 		// Set the join val for all threads joining on the current exiting one, to the exit val of the exiting one
 		temp->thread_cb->join_val = s->exit_val;
 
