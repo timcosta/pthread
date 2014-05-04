@@ -83,6 +83,7 @@ int pthread_yield(void) {
 
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
+	printf("join on thread %d",thread);
 	if(schedular->head == NULL) {
 		printf("sched head null\n");
 	}else{
