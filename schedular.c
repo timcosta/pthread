@@ -11,6 +11,8 @@
 #define MAX_NUM_COND_VARS 1000
 #define MAX_NUM_MUTEX_VARS 1000
 
+setbuf(stdout, NULL);
+
 
 // TCB(Thread control Block)
 typedef struct TCB {

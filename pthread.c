@@ -17,7 +17,7 @@ struct Schedular * makeSchedular(TCB * main_block);
 // Creates a user level thread
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *) , void *arg) {
 
-	printf("create");
+	printf("create\n");
 	// Check flag to see if the schedular has been created. If not, create it.
 	if (schedularCreated == 0) {
 
