@@ -313,6 +313,9 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	// Add the current running thread to the queue of the cond. var(context switch)
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
+	// Reaquire the mutex 
+	pthread_mutex_lock(mutex);
+
 	return 0;
 }
 
