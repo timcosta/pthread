@@ -155,6 +155,9 @@ void schedule(void) {
 	
 	} 
 
+
+	printf("done\n");
+
 }
 
 
