@@ -240,10 +240,10 @@ void join(Schedular * s) {
 
 		// Add current TCB to back of its joining queue
 		if (temp == NULL) {
-			printf("jo1\n")
+			printf("jo1\n");
 			temp = s->head; 
 		} else {
-			printf("jo2\n")
+			printf("jo2\n");
 			while (temp->next != NULL) temp = temp->next;
 			temp->next = s->head;
 			temp = temp->next;
