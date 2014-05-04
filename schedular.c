@@ -257,11 +257,11 @@ void join(Schedular * s) {
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
 
+		printf("Joinlist of T2: %d\n",s->head->join_list->thread_cb->thread_id);
+
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
-
-		printf("Joinlist of T2: %d\n",s->head->join_list->thread_cb->thread_id);
 
 	} else {
 		printf("temp is null\n");
