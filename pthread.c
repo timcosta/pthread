@@ -61,6 +61,7 @@ void pthread_exit(void *value_ptr) {
 	schedular->voluntaryExit = 1;
 
 	// Set the exit val
+	printf("0\n");
 	schedular->exit_val = *((int*)value_ptr);
 	printf("1\n");
 	// swap to schedular context to perform exit
