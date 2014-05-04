@@ -17,7 +17,7 @@ struct Schedular * makeSchedular(TCB * main_block);
 // Creates a user level thread
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *) , void *arg) {
 
-	printf("create\n");
+	//printf("create\n");
 	// Check flag to see if the schedular has been created. If not, create it.
 	if (schedularCreated == 0) {
 
@@ -84,25 +84,25 @@ int pthread_yield(void) {
 
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
-	printf("join on thread %d\n",thread);
-	printf("j1\n");
+	//printf("join on thread %d\n",thread);
+	//printf("j1\n");
 	// Set schedular action flag to 2 
 	schedular->action = 2;
 
 	// Set schedular joining flag
 	schedular->join_id = thread;
 
-	printf("j2\n");
+	//printf("j2\n");
 
 	// swap to schedular context to perform join
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("j3\n");
+	//printf("j3\n");
 
 	// Set the join val
 	//if(value_ptr != NULL) **value_ptr = schedular->head->thread_cb->join_val;
 	
-	printf("j4\n");
+	//printf("j4\n");
 
 	return 0;
 }
@@ -151,7 +151,7 @@ void schedule(void) {
 	} 
 
 
-	printf("done\n");
+	//printf("done\n");
 
 }
 

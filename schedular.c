@@ -96,11 +96,11 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 
 // Run the next thread in the ready queue
 void runNextThread(Schedular * s) {
-	printf("1\n");
+	//printf("1\n");
 
 	// if there is more than one node on the ready queue, move the head to the back
 	if(s->tail != s->head) { 
-		printf("2\n");
+		//printf("2\n");
 
 		// Add current TCB to the back of queue
 		s->tail->next = s->head;
@@ -113,9 +113,9 @@ void runNextThread(Schedular * s) {
 		// Set the tail correctly
 		s->tail = s->tail->next;
 		s->tail->next = NULL;
-		printf("3\n");
+		//printf("3\n");
 	}
-	printf("4\n");
+	//printf("4\n");
 
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
@@ -141,7 +141,7 @@ void currExit(Schedular * s) {
 	// Add list of joins from current TCB to back of ready queue
 	while (temp != NULL) {
 
-		printf("adding back to ready queue\n");
+		//printf("adding back to ready queue\n");
 
 		// Set the join val for all threads joining on the current exiting one, to the exit val of the exiting one
 		temp->thread_cb->join_val = s->exit_val;
@@ -171,13 +171,13 @@ void currExit(Schedular * s) {
 		s->head->prev = NULL;
 	}
 	if(s->voluntaryExit == 1) {
-		printf("e1\n");
+		//printf("e1\n");
 		//free((temp->thread_cb->thread_context).uc_stack.ss_sp); // Delete memory from this TCB context stack
-		printf("e2: %d\n",temp->thread_cb->thread_id);
+		//printf("e2: %d\n",temp->thread_cb->thread_id);
 		free(temp->thread_cb); // Free the TCB itself 
-		printf("e3\n");
+		//printf("e3\n");
 		free(temp); // delete the memory of this node
-		printf("e4\n");
+		//printf("e4\n");
 	}
 	// Decrement the size of the queue
 	s->size--;
@@ -186,7 +186,7 @@ void currExit(Schedular * s) {
 	s->action = 0;
 
 	/* * * */
-	printf("Exiting T2\n");
+	//printf("Exiting T2\n");
 	printReadyQueue(s);
 
 	// Unless the last thread has exited, swap back to user mode
@@ -202,13 +202,13 @@ Node * findTarget(Node * root, pthread_t id) {
 
 	// Check if we hit a dead end
 	if (root == NULL) {
-		printf("root null\n");
+		//printf("root null\n");
 		return NULL;
 	}
 
 	// Check if we have the correct node
 	if (root->thread_cb->thread_id == id) {
-		printf("returning root\n");
+		//printf("returning root\n");
 		return root;
 	}
 
@@ -230,16 +230,16 @@ void join(Schedular * s) {
 
 	if (temp != NULL) {
 
-		printf("temp not null\n");
+		//printf("temp not null\n");
 
 
 		// Add current TCB to back of its joining queue
 		if (temp->join_list == NULL) {
-			printf("jo1\n");
+			//printf("jo1\n");
 			temp->join_list = s->head; 
 			temp = temp->join_list;
 		} else {
-			printf("jo2\n");
+			//printf("jo2\n");
 			temp = temp->join_list;
 			while (temp->next != NULL) temp = temp->next;
 			temp->next = s->head;
@@ -263,7 +263,7 @@ void join(Schedular * s) {
 
 
 	} else {
-		printf("temp is null\n");
+		//printf("temp is null\n");
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
 
@@ -404,12 +404,12 @@ void addToReadyTail(Node* n,Schedular *s) {
 void printReadyQueue(Schedular *s) {
 
 	Node * temp = s->head;
-	printf("Printing Queue:\n");
+	//printf("Printing Queue:\n");
 	while (temp!=NULL) {
-		printf("%d",temp->thread_cb->thread_id);
+		//printf("%d",temp->thread_cb->thread_id);
 		temp = temp->next;
 	}
-	printf("NULL\n");
+	//printf("NULL\n");
 
 }
 
