@@ -234,7 +234,7 @@ void join(Schedular * s) {
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
 	} else {
-
+		printf("temp is null\n");
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
 
