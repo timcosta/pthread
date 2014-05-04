@@ -95,9 +95,11 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 
 // Run the next thread in the ready queue
 void runNextThread(Schedular * s) {
+	printf("1\n");
 
 	// if there is more than one node on the ready queue, move the head to the back
 	if(s->tail != s->head) { 
+		printf("2\n");
 
 		// Add current TCB to the back of queue
 		s->tail->next = s->head;
@@ -110,8 +112,9 @@ void runNextThread(Schedular * s) {
 		// Set the tail correctly
 		s->tail = s->tail->next;
 		s->tail->next = NULL;
+		printf("3\n");
 	}
-
+	printf("4\n");
 
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
