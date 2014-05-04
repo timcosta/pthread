@@ -8,8 +8,11 @@ SRCS= pthread.c schedular.c
 all:: test
 	
 
-test: pthread 
+test: test.o 
 	$(CC) -o test pthread.o test.o
+
+test.o: pthread
+	$(CC) -c test.c -o test.o
 
 pthread: schedular
 	$(CC) -c pthread.c -o pthread.o
