@@ -26,6 +26,8 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 		schedular = makeSchedular(main_block);
 		schedularCreated = 1;
+
+		if(schedular->head == NULL) printf("sched head null\n");
 	}
 
 	// Dynamically create a new thread
