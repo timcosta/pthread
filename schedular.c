@@ -240,6 +240,7 @@ void join(Schedular * s) {
 		if (temp->join_list == NULL) {
 			printf("jo1\n");
 			temp->join_list = s->head; 
+			temp = temp->join_list;
 		} else {
 			printf("jo2\n");
 			temp = temp->join_list;
