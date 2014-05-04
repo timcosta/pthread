@@ -42,7 +42,7 @@ typedef struct Schedular {
 	int maxSize;
 
 	// Vals for thread lib
-	void exit_val;
+	int* exit_val;
 	int action;
 	pthread_t numCreated;
 	pthread_t join_id;
