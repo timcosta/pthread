@@ -208,6 +208,8 @@ void join(Schedular * s) {
 
 	if (temp != NULL) {
 
+		printf("temp not null\n");
+
 		// Set temp to be the joining list
 		temp = temp->join_list;
 
