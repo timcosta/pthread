@@ -1,8 +1,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void * print_message() {
-	printf("THREADING\n");
+void * first_message() {
+	printf("First\n");
+	pthread_yield();
+	printf("Third\n");
+
+}
+
+void * second_message() {
+	printf("Second\n");
+	pthread_yield();
+	printf("Fourth\n");
+
 }
 
 void main(void) {
@@ -10,8 +20,8 @@ void main(void) {
 	pthread_t t1;
 	pthread_t t2;
 
-	pthread_create(&t1, NULL, &print_message, NULL);
-	pthread_create(&t2, NULL, &print_message, NULL);
+	pthread_create(&t1, NULL, &first_message, NULL);
+	pthread_create(&t2, NULL, &second_message, NULL);
 	printf("Starting...\n");
 
 	exit(0);
