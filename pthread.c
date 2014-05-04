@@ -219,8 +219,8 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 	// Create the queue for this cond. var
 
 	// Set the index(count) for the mutex. for where it is in the queue array
-	mutex->__data->count = schedular->nextMutexId++;
-	mutex->__data->lock = 0;
+	mutex->__data.count = schedular->nextMutexId++;
+	mutex->__data.lock = 0;
 
 	return 0;
 
@@ -237,12 +237,12 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 // Lock the mutex
 int pthread_mutex_lock(pthread_mutex_t *mutex) {
 
-	if(mutex->__data->lock == 1) {
+	if(mutex->__data.lock == 1) {
 		s->action = 7;
-		schedular->currMutexVarId = mutex->__data->count;
+		schedular->currMutexVarId = mutex->__data.count;
 		swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	}
-	mutex->__data->lock = 1;
+	mutex->__data.lock = 1;
 	return 0;
 
 }
@@ -251,9 +251,9 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 
 	s->action = 6;
-	schedular->currMutexVarId = mutex->__data->count;
+	schedular->currMutexVarId = mutex->__data.count;
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
-	mutex->__data->lock = 0;
+	mutex->__data.lock = 0;
 	return 0;
 
 }
@@ -281,7 +281,7 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 	// Create the queue for this cond. var
 
 	// Set the index(lock) for the cond. var. for where it is in the queue array
-	cond->__data->lock = schedular->nextCondId++;
+	cond->__data.lock = schedular->nextCondId++;
 
 	// Add the queue to the queue array
 
@@ -307,7 +307,7 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	pthread_mutex_unlock(mutex);
 
 	// Set the schedular cond. var index(lock) to the correct value
-	schedular->currCondVarId = cond->__data->lock;
+	schedular->currCondVarId = cond->__data.lock;
 
 	// Set the correct action for the schedular
 	schedular->action = 3;
@@ -325,7 +325,7 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 int pthread_cond_signal(pthread_cond_t *cond) {
 
 	// Set the schedular cond. var index to the correct value
-	schedular->currCondVarId = cond->__data->lock;
+	schedular->currCondVarId = cond->__data.lock;
 
 	// Set the correct action for the schedular 
 	schedular->action = 4;
@@ -342,7 +342,7 @@ int pthread_cond_signal(pthread_cond_t *cond) {
 int pthread_cond_broadcast(pthread_cond_t *cond) {
 
 	// Set the schedular cond. var index to the correct value
-	schedular->currCondVarId = cond->__data->lock;
+	schedular->currCondVarId = cond->__data.lock;
 
 	// Set the correct action for the schedular 
 	schedular->action = 5;
