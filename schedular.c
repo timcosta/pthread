@@ -243,6 +243,9 @@ void join(Schedular * s) {
 		// Make the end of the join list NULL
 		temp->next = NULL;
 
+		/* * * */
+		printReadyQueue(s);
+
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
 
@@ -386,6 +389,18 @@ void addToReadyTail(Node* n,Schedular *s) {
 
 	// End of the list points to NULL
 	s->tail->next = NULL;
+}
+
+void printReadyQueue(Schedular *s) {
+
+	Node * temp = s->head;
+	printf("Printing Queue:\n");
+	while (temp!=NULL) {
+		print("%d",temp->thread_cb->thread_id);
+		temp = temp->next;
+	}
+	printf("NULL\n")
+
 }
 
 // Have we reached the maximum number of threads
