@@ -26,7 +26,7 @@ void main(void) {
 	//pthread_create(&t2, NULL, &second_message, NULL);
 	//printf("created2\n");
 	printf("Starting...\n");
-	pthread_join(&t1,NULL);
+	pthread_join(t1,NULL);
 	//pthread_join(&t2,NULL);
 	exit(0);
 }
