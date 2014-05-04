@@ -120,6 +120,10 @@ void runNextThread(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
+
+	/* * * */
+	printReadyQueue(s);
+
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
@@ -242,9 +246,6 @@ void join(Schedular * s) {
 
 		// Make the end of the join list NULL
 		temp->next = NULL;
-
-		/* * * */
-		printReadyQueue(s);
 
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
