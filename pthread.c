@@ -10,7 +10,7 @@ Schedular *schedular; // Schedular Object
 
 // Schedular's context stack 
 char sched_stack[16384];
-char templ_stack[8192];
+char templ_stack[10][8192];
 
 
 struct Schedular * makeSchedular(TCB * main_block);
@@ -46,8 +46,8 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 	getcontext(&new_thread->thread_context);
 	//printf("context retrieved\n");
 	(new_thread->thread_context).uc_link          = &schedular->sched_context;
-    (new_thread->thread_context).uc_stack.ss_sp   = thread_stack;
-    (new_thread->thread_context).uc_stack.ss_size = sizeof(thread_stack);
+    (new_thread->thread_context).uc_stack.ss_sp   = templ_stack[schedular->numCreated + 1];
+    (new_thread->thread_context).uc_stack.ss_size = 8192;
 
     // Create the context for the new thread
 	makecontext(&new_thread->thread_context, start_routine, 1, arg);
