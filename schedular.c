@@ -323,7 +323,10 @@ void waitOnCond (Schedular *s) {
 	// Set head of ready queue to current
 	printf("wc4\n");
 	s->head = s->head->next;
-	if(s->head==NULL) exit("deadlock, bitch");
+	if(s->head==NULL) {
+		printf("Deadlock achieved!\nExiting now....\n");
+		exit(0);
+	}
 	printf("wc5\n");
 	s->head->prev = NULL;
 
