@@ -299,6 +299,7 @@ void waitOnCond (Schedular *s) {
 		temp = s->head;
 	} else {
 		printf("wc2.5\n");
+		printReadyQueue(s);
 		printf("%d\n",temp->thread_cb->thread_id);
 		while(temp->next != NULL) temp = temp->next;
 		printf("wc3\n");
