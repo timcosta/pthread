@@ -71,8 +71,8 @@ void main(void) {
 	printf("\n\n\nThe Readers-Writers Problem\n");
 	printf("This problem uses both a mutex and a conditional variable.\n");
 
-	pthread_cond_init(&wrt);
-	pthread_mutex_init(&mutex);
+	pthread_cond_init(&wrt,NULL);
+	pthread_mutex_init(&mutex,NULL);
 
 	pthread_create(&w1, NULL, &writer, NULL);
 	pthread_create(&r1, NULL, &reader, NULL);
