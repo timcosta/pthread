@@ -1,7 +1,7 @@
 pthread
 =======
 
-Submission One
+## Submission One
 
 This project implements pthread_create, pthread_exit, pthread_yield, and pthread_join. We used makecontext and swapcontext to implement the context switching for these threads.
 
@@ -9,7 +9,7 @@ We used a queue to keep track of which context was supposed execute when, and si
 
 We included a file, test.c, that creates two threads that just print "THREADING" after a "Starting..." line which is after the thread lines in the code. This code works, which validates our implementation.
 
-Submission Two
+## Submission Two
 
 This portion of the project implements synchronization, and also includes a full test suite, which the first submission did not. 
 
