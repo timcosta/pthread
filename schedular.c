@@ -455,7 +455,7 @@ void printReadyQueue(Schedular *s) {
 	printf("Printing Queue:\n");
 	while (temp!=NULL) {
 		printf("%d",temp->thread_cb->thread_id);
-		//temp = temp->next;
+		temp = temp->next;
 	}
 	printf("NULL\n");
 
