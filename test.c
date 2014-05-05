@@ -46,8 +46,7 @@ void * writer() {
 
 		pthread_mutex_lock(&mutex);
 		writeCount--;
-		if(readCount > 0) {
-			pthread_cond_broadcast(&wrt);
+		if(readCount > 0) pthread_cond_broadcast(&wrt);
 		pthread_mutex_unlock(&mutex);
 		count++;
 	} while(count < 5);
