@@ -35,13 +35,15 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 	// Dynamically create a new thread
 	TCB * new_thread =  (TCB *) malloc(sizeof(TCB));
+	printf("tcb crated\n");
 
 	// Thread's context stack 
 	char * thread_stack = (char *) malloc(sizeof(char) * 16384);
 
 	// Initialize this new context
-	printf("context retrieved\n");
+	printf("context retrieving\n");
 	getcontext(&new_thread->thread_context);
+	printf("context retrieved\n");
 	(new_thread->thread_context).uc_link          = &schedular->sched_context;
     (new_thread->thread_context).uc_stack.ss_sp   = thread_stack;
     (new_thread->thread_context).uc_stack.ss_size = sizeof(thread_stack);
