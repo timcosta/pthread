@@ -27,11 +27,11 @@ void main(void) {
 	pthread_create(&t2, NULL, &second_message, NULL);
 	printf("Starting...\n");
 	int* val1;
-	pthread_join(t1,(void**)&(val));
-	printf("val from 1: %d\n",val);
+	pthread_join(t1,(void**)&(val1));
+	printf("val from 1: %d\n",val1);
 	int* val2;
-	pthread_join(t2,(void**)&(val));
-	printf("val from 2: %d\n",val);
+	pthread_join(t2,(void**)&(val2));
+	printf("val from 2: %d\n",val2);
 	printf("last action\n");
 	exit(0);
 }
