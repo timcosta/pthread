@@ -30,21 +30,27 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 		if(schedular->head == NULL) printf("sched head null\n");
 	}
 
+
+	//printf("tcb creating\n");
+
 	// Dynamically create a new thread
 	TCB * new_thread =  (TCB *) malloc(sizeof(TCB));
+	//printf("tcb crated\n");
 
 	// Thread's context stack 
-	char * thread_stack = (char *) malloc(sizeof(char) * 16384);
-
+	char* thread_stack = (char*) malloc(136*sizeof(char));
+	//printf("test\n");
 	// Initialize this new context
+	//printf("context retrieving\n");
 	getcontext(&new_thread->thread_context);
+	//printf("context retrieved\n");
 	(new_thread->thread_context).uc_link          = &schedular->sched_context;
     (new_thread->thread_context).uc_stack.ss_sp   = thread_stack;
     (new_thread->thread_context).uc_stack.ss_size = sizeof(thread_stack);
 
     // Create the context for the new thread
 	makecontext(&new_thread->thread_context, start_routine, 1, arg);
-
+	//printf("context made\n");
 	// Add this to the ready queue
 	addThread(thread, schedular, new_thread);
 
