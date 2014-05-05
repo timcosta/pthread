@@ -312,12 +312,13 @@ void waitOnCond (Schedular *s) {
 	} else {
 		printf("wc2.5\n");
 		printReadyQueue(s);
-		printf("%d\n",temp->thread_cb->thread_id);
 		while(temp->next != NULL) temp = temp->next;
 		printf("wc3\n");
 		temp->next = s->head;
 		temp = temp->next;
 	}
+
+	printf("%d\n",temp->thread_cb->thread_id);
 
 	// Set head of ready queue to current
 	printf("wc4\n");
