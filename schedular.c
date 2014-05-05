@@ -387,7 +387,7 @@ void lock(Schedular *s) {
 
 void unlock(Schedular *s) {
 	// Get the head of the queue
-	printf("0\n");
+	printf("0: %d\n",s->currMutexVarId);
 	Node * temp = mutexVarMap[s->currMutexVarId];
 	printf("1\n");
 	if (temp != NULL) {
