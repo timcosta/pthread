@@ -382,6 +382,7 @@ void lock(Schedular *s) {
 
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
+		printf("Null Bitch.\n");
 		mutexVarMap[s->currMutexVarId] = s->head;
 		temp = s->head;
 	} else {
@@ -424,7 +425,7 @@ void unlock(Schedular *s) {
 
 	printf("Unlocked.\n");
 	printReadyQueue(s);
-	
+
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 }
