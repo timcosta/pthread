@@ -400,6 +400,9 @@ void lock(Schedular *s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
+	printf("Just Locked.\n");
+	printReadyQueue(s);
+
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
@@ -418,6 +421,10 @@ void unlock(Schedular *s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 	printf("4\n");
+
+	printf("Unlocked.\n");
+	printReadyQueue(s);
+	
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 }

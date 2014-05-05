@@ -57,9 +57,34 @@ void * second_message() {
 	pthread_exit(&val);
 }
 
+int shared=0;
+pthread_mutex_t pcm;
+
+void * producer() {
+	int count = 0;
+	do {
+		printf("producing: %d\n",shared);
+		count++;
+		pthread_mutex_lock(&pcm);
+		shared += 2;
+		pthread_mutex_unlock(&pcm);
+	}while(count<10);
+}
+
+void * consumer() {
+	int count = 0;
+	do {
+		printf("consuming: %d\n",shared);
+		count++;
+		pthread_mutex_lock(&pcm);
+		shared--;
+		pthread_mutex_unlock(&pcm);
+	}while(count<10);
+}
+
 void main(void) {
 
-	pthread_t t1,t2,w1,r1,r2,r3,r4;
+	pthread_t t1,t2,w1,r1,r2,r3,r4,pct1,pct2;
 
 	printf("Threading Proof of Concept\n");
 	pthread_create(&t1, NULL, &first_message, NULL);
@@ -76,6 +101,14 @@ void main(void) {
 
 	printf("\n\n\nThe Readers-Writers Problem\n");
 	printf("This problem uses both a mutex and a conditional variable.\n");
+
+	pthread_mutex_init(&pcm);
+
+	pthread_create(&pct1,NULL,&producer,NULL);
+	pthread_create(&pct2,NULL,&consumer,NULL);
+
+	pthread_join(pct1,NULL);
+	pthread_join(pct2,NULL);
 
 	// pthread_cond_init(&wrt,NULL);
 	// pthread_mutex_init(&mutex,NULL);
