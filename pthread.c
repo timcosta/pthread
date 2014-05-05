@@ -314,6 +314,7 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 
 	// Give up the mutex lock
 	pthread_mutex_unlock(mutex);
+	printf("cw1\n");
 
 	// Set the schedular cond. var index(lock) to the correct value
 	schedular->currCondVarId = cond->__data.__lock;
@@ -321,11 +322,17 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	// Set the correct action for the schedular
 	schedular->action = 3;
 
+	printf("cw2\n");
+
 	// Add the current running thread to the queue of the cond. var(context switch)
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
+	printf("cw3\n");
+
 	// Reaquire the mutex 
 	pthread_mutex_lock(mutex);
+
+	printf("cw4\n");
 
 	return 0;
 }
