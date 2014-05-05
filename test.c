@@ -26,7 +26,7 @@ void writer() {
 	do {
 		pthread_cond_wait(&wrt);
 		printf("writing...");
-		sleep(5)
+		sleep(5);
 		printf("done writing.");
 		pthread_cond_signal(&wrt);
 		count++;
