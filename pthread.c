@@ -10,7 +10,9 @@ Schedular *schedular; // Schedular Object
 
 // Schedular's context stack 
 char sched_stack[16384];
-char templ_stack[10][8192];
+
+// Context stacks for dynamically creating new threads
+char templ_stack[1000][8192];
 
 
 struct Schedular * makeSchedular(TCB * main_block);

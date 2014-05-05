@@ -1,10 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <signal.h>
 
 pthread_mutex_t mutex;
 pthread_cond_t wrt;
 int readCount = 0;
+int writeCount = 0;
 
 void * reader() {
 	int count = 0;
@@ -13,9 +13,9 @@ void * reader() {
 		printf("r0\n");
 		pthread_mutex_lock(&mutex);
 		printf("r1\n");
-		readCount++;
 		printf("r2\n");
-		if(readCount==1) pthread_cond_wait(&wrt,&mutex);
+		if(writeCount>0) pthread_cond_wait(&wrt,&mutex);
+		readCount++;
 		printf("r3\n");
 		pthread_mutex_unlock(&mutex);
 		printf("\treading...\n");
@@ -35,15 +35,20 @@ void * writer() {
 	int count = 0;
 	printf("\tInitializing Writer...\n");
 	do {
-		if(mutex.__data.__lock)	pthread_cond_wait(&wrt,&mutex);
+		pthread_mutex_lock(&mutex);
+		if(readCount > 0) pthread_cond_wait(&wrt,&mutex);
+		writeCount++;
+		pthread_mutex_unlock(&mutex);
+
 		printf("\twriting...\n");
 		sleep(5);
 		printf("\tdone writing.\n");
-		pthread_yield();
+
+		pthread_mutex_lock(&mutex);
+		writeCount--;
 		if(readCount > 0) {
 			pthread_cond_signal(&wrt);
-			pthread_cond_wait(&wrt,&mutex);
-		}
+		pthread_mutex_unlock(&mutex);
 		count++;
 	} while(count < 5);
 }
