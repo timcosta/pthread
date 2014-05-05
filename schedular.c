@@ -54,7 +54,7 @@ typedef struct Schedular {
 	int currCondVarId;  // Id of the cond. var under operation
 
 	int nextMutexId; // Id of the next mutex n the mutex var map
-	long int currMutexVarId;  // Id of the mutex var under operation
+	int currMutexVarId;  // Id of the mutex var under operation
 } Schedular;
 
 
@@ -387,6 +387,7 @@ void lock(Schedular *s) {
 
 void unlock(Schedular *s) {
 	// Get the head of the queue
+	printf("0\n");
 	Node * temp = mutexVarMap[s->currMutexVarId];
 	printf("1\n");
 	if (temp != NULL) {
