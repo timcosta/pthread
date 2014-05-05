@@ -432,12 +432,12 @@ void addToReadyTail(Node* n,Schedular *s, int isLock) {
 void printReadyQueue(Schedular *s) {
 
 	Node * temp = s->head;
-	//printf("Printing Queue:\n");
+	printf("Printing Queue:\n");
 	while (temp!=NULL) {
-		//printf("%d",temp->thread_cb->thread_id);
+		printf("%d",temp->thread_cb->thread_id);
 		temp = temp->next;
 	}
-	//printf("NULL\n");
+	printf("NULL\n");
 
 }
 
