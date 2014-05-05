@@ -10,25 +10,25 @@ void * reader() {
 	int count = 0;
 	printf("\tInitializing Reader...\n");
 	do {
-		printf("r0\n");
+		//printf("r0\n");
 		pthread_mutex_lock(&mutex);
-		printf("r1\n");
-		printf("r2\n");
+		//printf("r1\n");
+		//printf("r2\n");
 		if(writeCount>0) pthread_cond_wait(&wrt,&mutex);
 		readCount++;
-		printf("r3\n");
+		//printf("r3\n");
 		pthread_mutex_unlock(&mutex);
 		printf("\treading...\n");
 		pthread_yield();
 		pthread_mutex_lock(&mutex);
-		printf("r4\n");
+		//printf("r4\n");
 		readCount--;
 		if(readCount==0) pthread_cond_signal(&wrt);
-		printf("r5\n");
+		//printf("r5\n");
 		pthread_mutex_unlock(&mutex);
-		printf("r6\n");
+		//printf("r6\n");
 		count++;
-		printf("r7\n");
+		//printf("r7\n");
 	} while(count<10);
 }
 
