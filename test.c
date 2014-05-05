@@ -10,14 +10,20 @@ void * reader() {
 	printf("\tInitializing Reader...\n");
 	do {
 		pthread_mutex_lock(&mutex);
+		printf("r1\n");
 		readCount++;
+		printf("r2\n");
 		if(readCount==1) pthread_cond_wait(&wrt,&mutex);
+		printf("r3\n");
 		pthread_mutex_unlock(&mutex);
 		printf("\treading...");
 		pthread_mutex_lock(&mutex);
+		printf("r4\n");
 		readCount--;
 		if(readCount==0) pthread_cond_signal(&wrt);
+		printf("r5\n");
 		pthread_mutex_unlock(&mutex);
+		printf("r6\n");
 		count++;
 	} while(count<10);
 }
