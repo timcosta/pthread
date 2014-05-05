@@ -41,9 +41,7 @@ void * writer() {
 		writeCount++;
 		pthread_mutex_unlock(&mutex);
 
-		printf("\twriting...\n");
-		sleep(5);
-		printf("\tdone writing.\n");
+		printf("\twriting...\n");\
 
 		pthread_mutex_lock(&mutex);
 		writeCount--;
