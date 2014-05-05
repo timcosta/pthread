@@ -1,6 +1,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+pthread_mutex_t mutex;
+pthread_cond_t wrt;
+int readCount = 0;
+
+void reader() {
+	printf("reading");
+}
+
+void writer() {
+
+	printf("writing");
+
+}
+
 void * first_message() {
 	printf("First\n");
 	pthread_yield();
