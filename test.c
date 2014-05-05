@@ -6,7 +6,7 @@ pthread_cond_t wrt;
 int readCount = 0;
 
 void reader() {
-	count = 0;
+	int count = 0;
 	do {
 		pthread_mutex_lock(&mutex);
 		readCount++;
