@@ -232,7 +232,7 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 
 	// Set the index(count) for the mutex. for where it is in the queue array
 	mutex->__data.__count = schedular->nextMutexId++;
-	printf("xx: %d",mutex->__data.__count);
+	printf("xx: %d\n",mutex->__data.__count);
 	mutex->__data.__lock = 0;
 
 	return 0;
@@ -264,7 +264,7 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 
 	schedular->action = 6;
-	printf("x: %d",mutex->__data.__count);
+	printf("x: %d\n",mutex->__data.__count);
 	schedular->currMutexVarId = mutex->__data.__count;
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	mutex->__data.__lock = 0;
