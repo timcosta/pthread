@@ -65,7 +65,7 @@ void main(void) {
 	int* val2;
 	pthread_join(t2,(void**)&(val2));
 	printf("\tThread 2 val: %d\n",*val2);
-	printf("Above, you should have seen First, Second, Third, and Fourth printed out in order.\n");
+	printf("Above, you should have seen Starting followed by First, Second, Third, and Fourth printed out in order.\n");
 	printf("The expected values are 1 and 2, the same as their thread ids.\n");
 
 	printf("\n\n\nThe Readers-Writers problem\n");
