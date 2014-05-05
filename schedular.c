@@ -270,6 +270,13 @@ void join(Schedular * s) {
 
 		// Set head of ready queue to current
 		s->head = s->head->next;
+
+		// Check for deadlock
+		if(s->head==NULL) {
+			printf("Deadlock achieved!\nExiting now....\n");
+			exit(0);
+		}
+
 		s->head->prev = NULL;
 
 		// Make the end of the join list NULL
@@ -323,6 +330,8 @@ void waitOnCond (Schedular *s) {
 	// Set head of ready queue to current
 	printf("wc4\n");
 	s->head = s->head->next;
+
+	// Check for deadlock
 	if(s->head==NULL) {
 		printf("Deadlock achieved!\nExiting now....\n");
 		exit(0);
@@ -400,6 +409,13 @@ void lock(Schedular *s) {
 
 	// Set head of ready queue to current
 	s->head = s->head->next;
+
+	// Check for Deadlock
+	if(s->head==NULL) {
+		printf("Deadlock achieved!\nExiting now....\n");
+		exit(0);
+	}
+
 	s->head->prev = NULL;
 
 	// Make the end of the join list NULL
