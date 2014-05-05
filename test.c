@@ -19,6 +19,7 @@ void * reader() {
 		printf("r3\n");
 		pthread_mutex_unlock(&mutex);
 		printf("\treading...\n");
+		pthread_yield();
 		pthread_mutex_lock(&mutex);
 		printf("r4\n");
 		readCount--;
@@ -134,8 +135,8 @@ void main(void) {
 	pthread_cond_init(&wrt,NULL);
 	pthread_mutex_init(&mutex,NULL);
 
-	pthread_create(&w1, NULL, &writer, NULL);
 	pthread_create(&r1, NULL, &reader, NULL);
+	pthread_create(&w1, NULL, &writer, NULL);
 	//pthread_create(&r2, NULL, &reader, NULL);
 	//pthread_create(&r3, NULL, &reader, NULL);
 	//pthread_create(&r4, NULL, &reader, NULL);
