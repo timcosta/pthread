@@ -80,7 +80,7 @@ void * consumer() {
 		count++;
 		pthread_mutex_lock(&pcm);
 		shared--;
-		//pthread_yield();
+		pthread_yield();
 		pthread_mutex_unlock(&pcm);
 	}while(count<10);
 }
@@ -129,8 +129,8 @@ void main(void) {
 	//pthread_create(&r3, NULL, &reader, NULL);
 	//pthread_create(&r4, NULL, &reader, NULL);
 
-	pthread_join(r1,NULL);
 	pthread_join(w1,NULL);
+	pthread_join(r1,NULL);
 	//pthread_join(r2,NULL);
 	//pthread_join(r3,NULL);
 	//pthread_join(r4,NULL);
