@@ -293,6 +293,7 @@ void waitOnCond (Schedular *s) {
 	printf("wc1\n");
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
+		printf("wc1.5: %d\n",s->currCondVarId);
 		condVarMap[s->currCondVarId] = s->head;
 		printf("wc2\n");
 		temp = s->head;
