@@ -90,6 +90,9 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 		// Increment the size of the schedular queue
 		s->size++;
 
+		printf("Created new thread.\n");
+		printReadyQueue(s);
+
 	}
 }
 
@@ -119,6 +122,9 @@ void runNextThread(Schedular * s) {
 
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
+
+	printf("Yielded.\n");
+	printReadyQueue(s);
 
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
@@ -171,6 +177,9 @@ void currExit(Schedular * s) {
 	s->size--;
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
+
+	printf("Exited thread.\n");
+	printReadyQueue(s);
 
 	// Unless the last thread has exited, swap back to user mode
 	if (s->head != NULL) {
@@ -270,6 +279,9 @@ void join(Schedular * s) {
 		s->action = 0;
 
 		//if (s->head->join_list == NULL) printf("joinlist is null\n");
+
+		printf("Thread join.\n");
+		printReadyQueue(s);
 
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
