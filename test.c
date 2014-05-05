@@ -36,7 +36,11 @@ void * writer() {
 		printf("\twriting...\n");
 		sleep(5);
 		printf("\tdone writing.\n");
-		pthread_cond_signal(&wrt);
+		pthread_yield();
+		if(readCount > 0) {
+			pthread_cond_signal(&wrt);
+			pthread_cond_wait(&wrt,&mutex);
+		}
 		count++;
 	} while(count < 5);
 }
