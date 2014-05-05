@@ -96,13 +96,13 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	// swap to schedular context to perform join
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("j3\n");
+	//printf("j3\n");
 
 	// Set the join val
-	printf("%d\n",schedular->head->thread_cb->join_val);
+	//printf("%d\n",schedular->head->thread_cb->join_val);
 	value_ptr = (void**)(schedular->head->thread_cb->join_val);
 	
-	printf("j4\n");
+	//printf("j4\n");
 
 	return 0;
 }

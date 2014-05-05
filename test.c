@@ -5,7 +5,8 @@ void * first_message() {
 	printf("First\n");
 	pthread_yield();
 	printf("Third\n");
-
+	int val = 1;
+	pthread_exit(&val);
 }
 
 void * second_message() {
@@ -25,8 +26,10 @@ void main(void) {
 	pthread_create(&t1, NULL, &first_message, NULL);
 	pthread_create(&t2, NULL, &second_message, NULL);
 	printf("Starting...\n");
-	pthread_join(t1,NULL);
-	int* val;
+	int* val1;
+	pthread_join(t1,(void**)&(val));
+	printf("val from 1: %d\n",val);
+	int* val2;
 	pthread_join(t2,(void**)&(val));
 	printf("val from 2: %d\n",val);
 	printf("last action\n");
