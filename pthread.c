@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signals.h>
+#include <unistd.h>
 #include "schedular.c"
 
 // typedef unsigned long int pthread_t;
@@ -17,7 +19,7 @@ struct Schedular * makeSchedular(TCB * main_block);
 
 // Creates a user level thread
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *) , void *arg) {
-
+	alarm(0);
 	//printf("create\n");
 	// Check flag to see if the schedular has been created. If not, create it.
 	if (schedularCreated == 0) {
@@ -53,7 +55,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 	//printf("context made\n");
 	// Add this to the ready queue
 	addThread(thread, schedular, new_thread);
-
+	alarm(1);
 	return 0;
 
 }
@@ -61,7 +63,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 // Terminate the calling thread. Return value set that can be used by the calling thread when calling pthread_join
 void pthread_exit(void *value_ptr) { 
-	
+	alarm(0);
 	// Set schedularAction flag to 0 
 	schedular->action = 0;
 
@@ -70,12 +72,12 @@ void pthread_exit(void *value_ptr) {
 
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
-
+	alarm(1);
 }
 
 // Calling thread gives up the CPU
 int pthread_yield(void) {
-	
+	alarm(0);
 	// Set schedular action flag to 1 	
 	schedular->action = 1;
 
@@ -83,13 +85,14 @@ int pthread_yield(void) {
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
 	//printf("eihjkjewr\n");
-
+	alarm(1);
 	return 0;
 }
 
 
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
+	alarm(0);
 	//printf("join on thread %d\n",thread);
 	//printf("j1\n");
 	// Set schedular action flag to 2 
@@ -109,7 +112,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	if(value_ptr != NULL) *value_ptr = &joinVals[thread];
 
 	//printf("j4\n");
-
+	alarm(1);
 	return 0;
 }
 
@@ -235,7 +238,6 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 	mutex->__data.__owner = schedular->nextMutexId++;
 	//printf("xx: %d\n",mutex->__data.__owner);
 	mutex->__data.__lock = 0;
-
 	return 0;
 
 }
@@ -250,25 +252,27 @@ int pthread_mutex_destroy(pthread_mutex_t *mutex) {
 
 // Lock the mutex
 int pthread_mutex_lock(pthread_mutex_t *mutex) {
-
+	alarm(0);
 	if(mutex->__data.__lock == 1) {
 		schedular->action = 7;
 		schedular->currMutexVarId = mutex->__data.__owner;
 		swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	}
 	mutex->__data.__lock = 1;
+	alarm(1);
 	return 0;
 
 }
 
 // Unlock the mutex
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
-
+	alarm(0);
 	schedular->action = 6;
 	//printf("x: %d\n",mutex->__data.__owner);
 	schedular->currMutexVarId = mutex->__data.__owner;
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	mutex->__data.__lock = 0;
+	alarm(1);
 	return 0;
 
 }
@@ -312,7 +316,7 @@ int pthread_cond_destroy(pthread_cond_t *cond) {
 
 // Wait until another thread wakes up this one
 int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
-
+	alarm(0);
 	// Give up the mutex lock
 	pthread_mutex_unlock(mutex);
 	//printf("cw1\n");
@@ -334,13 +338,13 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	pthread_mutex_lock(mutex);
 
 	//printf("cw4\n");
-
+	alarm(1);
 	return 0;
 }
 
 // Wake up the next thread waiting on the conditional variable 
 int pthread_cond_signal(pthread_cond_t *cond) {
-
+	alarm(0);
 	// Set the schedular cond. var index to the correct value
 	schedular->currCondVarId = cond->__data.__lock;
 
@@ -350,14 +354,14 @@ int pthread_cond_signal(pthread_cond_t *cond) {
 	// Take off the first thread from the queue of the cond. var and add to the ready queue(context switch)
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-
+	alarm(1);
 	return 0;
 }
 
 
 // Wake up all threads waiting on the conditional variable 
 int pthread_cond_broadcast(pthread_cond_t *cond) {
-
+	alarm(0);
 	// Set the schedular cond. var index to the correct value
 	schedular->currCondVarId = cond->__data.__lock;
 
@@ -366,6 +370,17 @@ int pthread_cond_broadcast(pthread_cond_t *cond) {
 
 	// Take off the each thread from the queue of the cond. var and add to the ready queue(context switch)
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
-
+	alarm(1);
 	return 0;
 }
+
+void handle_SIGALRM() {
+	pthread_yield();
+}
+
+struct sigaction handler;
+handler.sa_handler = handle_SIGALRM;
+sigaction(SIGALRM,&handler, NULL);
+
+
+
