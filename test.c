@@ -55,7 +55,7 @@ void main(void) {
 
 	pthread_t t1,t2,w1,r1,r2,r3,r4;
 
-	printf("Proof of concept:\n");
+	printf("Threading Proof of Concept\n");
 	pthread_create(&t1, NULL, &first_message, NULL);
 	pthread_create(&t2, NULL, &second_message, NULL);
 	printf("\tStarting...\n");
@@ -68,7 +68,7 @@ void main(void) {
 	printf("Above, you should have seen Starting followed by First, Second, Third, and Fourth printed out in order.\n");
 	printf("The expected values are 1 and 2, the same as their thread ids.\n");
 
-	printf("\n\n\nThe Readers-Writers problem\n");
+	printf("\n\n\nThe Readers-Writers Problem\n");
 	printf("This problem uses both a mutex and a conditional variable.\n");
 
 	pthread_cond_init(&wrt);
