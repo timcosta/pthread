@@ -82,7 +82,7 @@ int pthread_yield(void) {
 	// swap to schedular context to perform yield
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("eihjkjewr\n");
+	//printf("eihjkjewr\n");
 
 	return 0;
 }
@@ -91,24 +91,24 @@ int pthread_yield(void) {
 // Finish execution of the target thread before finishing execution of the calling thread
 int pthread_join(pthread_t thread, void **value_ptr) {
 	//printf("join on thread %d\n",thread);
-	printf("j1\n");
+	//printf("j1\n");
 	// Set schedular action flag to 2 
 	schedular->action = 2;
 
 	// Set schedular joining flag
 	schedular->join_id = thread;
 
-	printf("j2\n");
+	//printf("j2\n");
 
 	// swap to schedular context to perform join
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("j3\n");
+	//printf("j3\n");
 
 	// Set the join val
 	if(value_ptr != NULL) *value_ptr = &joinVals[thread];
 
-	printf("j4\n");
+	//printf("j4\n");
 
 	return 0;
 }
@@ -233,7 +233,7 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 
 	// Set the index(count) for the mutex. for where it is in the queue array
 	mutex->__data.__owner = schedular->nextMutexId++;
-	printf("xx: %d\n",mutex->__data.__owner);
+	//printf("xx: %d\n",mutex->__data.__owner);
 	mutex->__data.__lock = 0;
 
 	return 0;
@@ -265,7 +265,7 @@ int pthread_mutex_lock(pthread_mutex_t *mutex) {
 int pthread_mutex_unlock(pthread_mutex_t *mutex) {
 
 	schedular->action = 6;
-	printf("x: %d\n",mutex->__data.__owner);
+	//printf("x: %d\n",mutex->__data.__owner);
 	schedular->currMutexVarId = mutex->__data.__owner;
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 	mutex->__data.__lock = 0;
@@ -315,7 +315,7 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 
 	// Give up the mutex lock
 	pthread_mutex_unlock(mutex);
-	printf("cw1\n");
+	//printf("cw1\n");
 
 	// Set the schedular cond. var index(lock) to the correct value
 	schedular->currCondVarId = cond->__data.__lock;
@@ -323,17 +323,17 @@ int pthread_cond_wait(pthread_cond_t *cond, pthread_mutex_t *mutex) {
 	// Set the correct action for the schedular
 	schedular->action = 3;
 
-	printf("cw2\n");
+	//printf("cw2\n");
 
 	// Add the current running thread to the queue of the cond. var(context switch)
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("cw3\n");
+	//printf("cw3\n");
 
 	// Reaquire the mutex 
 	pthread_mutex_lock(mutex);
 
-	printf("cw4\n");
+	//printf("cw4\n");
 
 	return 0;
 }

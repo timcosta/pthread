@@ -90,7 +90,7 @@ void addThread(pthread_t *thread, Schedular * s, TCB * block) {
 		// Increment the size of the schedular queue
 		s->size++;
 
-		printf("Created new thread.\n");
+		//printf("Created new thread.\n");
 		printReadyQueue(s);
 
 	}
@@ -123,7 +123,7 @@ void runNextThread(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
-	printf("Yielded.\n");
+	//printf("Yielded.\n");
 	printReadyQueue(s);
 
 	// Change context to new TCB context
@@ -178,7 +178,7 @@ void currExit(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
-	printf("Exited thread.\n");
+	//printf("Exited thread.\n");
 	printReadyQueue(s);
 
 	// Unless the last thread has exited, swap back to user mode
@@ -280,7 +280,7 @@ void join(Schedular * s) {
 
 		//if (s->head->join_list == NULL) printf("joinlist is null\n");
 
-		printf("Thread join.\n");
+		//printf("Thread join.\n");
 		printReadyQueue(s);
 
 		// Change context to current TCB context
@@ -302,27 +302,27 @@ void waitOnCond (Schedular *s) {
 
 	// Get the first node in the queue 
 	Node * temp = condVarMap[s->currCondVarId];
-	printf("wc1\n");
+	//printf("wc1\n");
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
-		printf("wc1.5: %d\n",s->currCondVarId);
+		//printf("wc1.5: %d\n",s->currCondVarId);
 		condVarMap[s->currCondVarId] = s->head;
-		printf("wc2\n");
+		//printf("wc2\n");
 		temp = s->head;
 	} else {
-		printf("wc2.5\n");
+		//printf("wc2.5\n");
 		printReadyQueue(s);
-		printf("%d\n",temp->thread_cb->thread_id);
+		//printf("%d\n",temp->thread_cb->thread_id);
 		while(temp->next != NULL) temp = temp->next;
-		printf("wc3\n");
+		//printf("wc3\n");
 		temp->next = s->head;
 		temp = temp->next;
 	}
 
 	// Set head of ready queue to current
-	printf("wc4\n");
+	//printf("wc4\n");
 	s->head = s->head->next;
-	printf("wc5\n");
+	//printf("wc5\n");
 	s->head->prev = NULL;
 
 	// Make the end of the join list NULL
@@ -382,7 +382,7 @@ void lock(Schedular *s) {
 
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
-		printf("Null Bitch.\n");
+		//printf("Null Bitch.\n");
 		mutexVarMap[s->currMutexVarId] = s->head;
 		temp = s->head;
 	} else {
@@ -401,9 +401,9 @@ void lock(Schedular *s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
-	printf("Just Locked.\n");
+	//printf("Just Locked.\n");
 	printReadyQueue(s);
-	printf("%d\n",s->head->thread_cb->thread_id);
+	//printf("%d\n",s->head->thread_cb->thread_id);
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
@@ -411,19 +411,19 @@ void lock(Schedular *s) {
 
 void unlock(Schedular *s) {
 	// Get the head of the queue
-	printf("0: %d\n",s->currMutexVarId);
+	//printf("0: %d\n",s->currMutexVarId);
 	Node * temp = mutexVarMap[s->currMutexVarId];
-	printf("1\n");
+	//printf("1\n");
 	if (temp != NULL) {
-		printf("2\n");
+		//printf("2\n");
 		addToReadyTail(temp,s,1);
 	}
-	printf("3\n");
+	//printf("3\n");
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
-	printf("4\n");
+	//printf("4\n");
 
-	printf("Unlocked.\n");
+	//printf("Unlocked.\n");
 	printReadyQueue(s);
 
 	// Change context to current TCB context
@@ -452,12 +452,12 @@ void addToReadyTail(Node* n,Schedular *s, int isLock) {
 void printReadyQueue(Schedular *s) {
 
 	Node * temp = s->head;
-	printf("Printing Queue:\n");
+	//printf("Printing Queue:\n");
 	while (temp!=NULL) {
-		printf("%d\n",temp->thread_cb->thread_id);
+		//printf("%d\n",temp->thread_cb->thread_id);
 		temp = temp->next;
 	}
-	printf("NULL\n");
+	//printf("NULL\n");
 
 }
 
