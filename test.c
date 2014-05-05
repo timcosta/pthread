@@ -7,13 +7,13 @@ int readCount = 0;
 
 void * reader() {
 	int count = 0;
-	printf("Initializing Reader...\n");
+	printf("\tInitializing Reader...\n");
 	do {
 		pthread_mutex_lock(&mutex);
 		readCount++;
 		if(readCount==1) pthread_cond_wait(&wrt);
 		pthread_mutex_unlock(&mutex);
-		printf("reading...");
+		printf("\treading...");
 		pthread_mutex_lock(&mutex);
 		readCount--;
 		if(readCount==0) pthread_cond_signal(&wrt);
@@ -24,29 +24,29 @@ void * reader() {
 
 void * writer() {
 	int count = 0;
-	printf("Initializing Writer...\n");
+	printf("\tInitializing Writer...\n");
 	do {
 		pthread_cond_wait(&wrt);
-		printf("writing...");
+		printf("\twriting...");
 		sleep(5);
-		printf("done writing.");
+		printf("\tdone writing.");
 		pthread_cond_signal(&wrt);
 		count++;
 	} while(count < 5);
 }
 
 void * first_message() {
-	printf("First\n");
+	printf("\tFirst\n");
 	pthread_yield();
-	printf("Third\n");
+	printf("\tThird\n");
 	int val = 1;
 	pthread_exit(&val);
 }
 
 void * second_message() {
-	printf("Second\n");
+	printf("\tSecond\n");
 	pthread_yield();
-	printf("Fourth\n");
+	printf("\tFourth\n");
 	int val = 2;
 	pthread_exit(&val);
 }
@@ -58,13 +58,13 @@ void main(void) {
 	printf("Proof of concept:\n");
 	pthread_create(&t1, NULL, &first_message, NULL);
 	pthread_create(&t2, NULL, &second_message, NULL);
-	printf("Starting...\n");
+	printf("\tStarting...\n");
 	int* val1;
 	pthread_join(t1,(void**)&(val1));
-	printf("val from 1: %d\n",*val1);
+	printf("\tThread 1 val: %d\n",*val1);
 	int* val2;
 	pthread_join(t2,(void**)&(val2));
-	printf("val from 2: %d\n",*val2);
+	printf("\tThread 2 val: %d\n",*val2);
 	printf("Above, you should have seen First, Second, Third, and Fourth printed out in order.\n");
 	printf("The expected values are 1 and 2, the same as their thread ids.\n");
 
@@ -80,7 +80,7 @@ void main(void) {
 	pthread_create(&r3, NULL, &reader, NULL);
 	pthread_create(&r4, NULL, &reader, NULL);
 
-	printf("Initialized 1 Writer and 4 readers\n");
+	printf("\tInitialized 1 Writer and 4 readers\n");
 
 	pthread_join(r1,NULL);
 	pthread_join(w1,NULL);
