@@ -5,7 +5,7 @@ pthread_mutex_t mutex;
 pthread_cond_t wrt;
 int readCount = 0;
 
-void reader() {
+void * reader() {
 	int count = 0;
 	printf("Initializing Reader...\n");
 	do {
@@ -22,7 +22,7 @@ void reader() {
 	} while(count<10);
 }
 
-void writer() {
+void * writer() {
 	int count = 0;
 	printf("Initializing Writer...\n");
 	do {
