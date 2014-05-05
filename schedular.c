@@ -398,7 +398,6 @@ void lock(Schedular *s) {
 
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
-		//printf("Null Bitch.\n");
 		mutexVarMap[s->currMutexVarId] = s->head;
 		temp = s->head;
 	} else {
