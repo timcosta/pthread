@@ -169,7 +169,6 @@ void currExit(Schedular * s) {
 
 	// Decrement the size of the queue
 	s->size--;
-	s->voluntaryExit = 0;
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 

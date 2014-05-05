@@ -80,8 +80,6 @@ void main(void) {
 	pthread_create(&r3, NULL, &reader, NULL);
 	pthread_create(&r4, NULL, &reader, NULL);
 
-	printf("\tInitialized 1 Writer and 4 readers\n");
-
 	pthread_join(r1,NULL);
 	pthread_join(w1,NULL);
 	pthread_join(r2,NULL);
