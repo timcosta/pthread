@@ -291,7 +291,6 @@ void waitOnCond (Schedular *s) {
 	// Get the first node in the queue 
 	Node * temp = condVarMap[s->currCondVarId];
 	printf("wc1\n");
-	printf("%d\n",temp->thread_cb->thread_id);
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
 		printf("wc1.5: %d\n",s->currCondVarId);
@@ -300,6 +299,7 @@ void waitOnCond (Schedular *s) {
 		temp = s->head;
 	} else {
 		printf("wc2.5\n");
+		printf("%d\n",temp->thread_cb->thread_id);
 		while(temp->next != NULL) temp = temp->next;
 		printf("wc3\n");
 		temp->next = s->head;
