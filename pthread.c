@@ -61,7 +61,8 @@ void pthread_exit(void *value_ptr) {
 	schedular->voluntaryExit = 1;
 
 	// Set the exit val
-	schedular->exit_val = *((int*)value_ptr);
+	joinVals[schedular->head->thread_cb->thread_id] = *((int*)value_ptr);
+
 	// swap to schedular context to perform exit
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
@@ -99,7 +100,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	printf("j3\n");
 
 	// Set the join val
-	*value_ptr = schedular->head->thread_cb->join_val;
+	*value_ptr = &joinVals[thread];
 	
 	printf("j4\n");
 
@@ -285,20 +286,15 @@ int pthread_cond_init(pthread_cond_t *cond, const pthread_condattr_t *attr) {
 	// Check if you can create another conditional variable
 	if (schedular->nextCondId == MAX_NUM_COND_VARS) return -1;
 
-	// Create the queue for this cond. var
 
 	// Set the index(lock) for the cond. var. for where it is in the queue array
 	cond->__data.__lock = schedular->nextCondId++;
-
-	// Add the queue to the queue array
 
 	return 0;
 }
 
 // Destroy the conditional variable
 int pthread_cond_destroy(pthread_cond_t *cond) {
-
-	// Delete the node memory allocated for the cond. var queue
 
 	// Delete the memory allocated for the conditional variable 
 	free(cond);

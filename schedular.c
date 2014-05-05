@@ -16,7 +16,6 @@
 typedef struct TCB {
 	pthread_t thread_id;
 	ucontext_t thread_context;
-	int join_val;
 } TCB;
 
 // The Node for queue functionality in schedular
@@ -33,6 +32,9 @@ typedef struct Node {
 struct Node *condVarMap[MAX_NUM_COND_VARS];
 struct Node *mutexVarMap[MAX_NUM_MUTEX_VARS];
 
+// Buffer for join/exit vals
+int joinVals[MAX_NUM_NODES];
+
 // The Schedular Struct
 typedef struct Schedular {
 
@@ -42,7 +44,6 @@ typedef struct Schedular {
 	int maxSize;
 
 	// Vals for thread lib
-	int exit_val;
 	int action;
 	int voluntaryExit;
 	pthread_t numCreated;
@@ -142,9 +143,6 @@ void currExit(Schedular * s) {
 	while (temp != NULL) {
 
 		//printf("adding back to ready queue\n");
-
-		// Set the join val for all threads joining on the current exiting one, to the exit val of the exiting one
-		temp->thread_cb->join_val = s->exit_val;
 
 		// Add temp to the back of the queue
 		s->tail->next = temp;
@@ -252,7 +250,7 @@ void join(Schedular * s) {
 		// If a thread terminates, this calls pthread exit for it 
 		s->action = 0;
 
-		if (s->head->join_list == NULL) printf("joinlist is null\n");
+		//if (s->head->join_list == NULL) printf("joinlist is null\n");
 
 		// Change context to current TCB context
 		swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
