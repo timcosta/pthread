@@ -453,9 +453,9 @@ void printReadyQueue(Schedular *s) {
 
 	Node * temp = s->head;
 	printf("Printing Queue:\n");
-	if (temp!=NULL) {
+	while (temp!=NULL) {
 		printf("%d\n",temp->thread_cb->thread_id);
-		//temp = temp->next;
+		temp = temp->next;
 	}
 	printf("NULL\n");
 
