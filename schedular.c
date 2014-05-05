@@ -403,7 +403,7 @@ void lock(Schedular *s) {
 
 	printf("Just Locked.\n");
 	printReadyQueue(s);
-
+	printf("%d\n",s->head->thread_cb->thread_id);
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
