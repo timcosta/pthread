@@ -332,6 +332,8 @@ void waitOnCond (Schedular *s) {
 	s->action = 0;
 
 	// Change context to current TCB context
+	printf("%d\n",s->head->thread_cb->thread_id);
+
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
 }
