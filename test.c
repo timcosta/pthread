@@ -7,6 +7,7 @@ int readCount = 0;
 
 void reader() {
 	int count = 0;
+	printf("Initializing Reader...\n");
 	do {
 		pthread_mutex_lock(&mutex);
 		readCount++;
@@ -23,6 +24,7 @@ void reader() {
 
 void writer() {
 	int count = 0;
+	printf("Initializing Writer...\n");
 	do {
 		pthread_cond_wait(&wrt);
 		printf("writing...");
