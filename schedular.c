@@ -240,7 +240,7 @@ void join(Schedular * s) {
 	// Find the thread we are joing on
 	Node * temp = findTarget(s->head, s->join_id);
 
-	if (temp == NULL) findTargetInMaps(s->join_id);
+	if (temp == NULL) findTargetInMaps(s,s->join_id);
 
 	if (temp != NULL) {
 
