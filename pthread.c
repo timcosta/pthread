@@ -39,7 +39,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 
 	// Thread's context stack 
 	char* thread_stack = (char*) malloc(13684*sizeof(char*));
-
+	printf("test\n");
 	// Initialize this new context
 	printf("context retrieving\n");
 	getcontext(&new_thread->thread_context);
