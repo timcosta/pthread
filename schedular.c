@@ -290,19 +290,23 @@ void waitOnCond (Schedular *s) {
 
 	// Get the first node in the queue 
 	Node * temp = condVarMap[s->currCondVarId];
-
+	printf("wc1\n");
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
 		condVarMap[s->currCondVarId] = s->head;
+		printf("wc2\n");
 		temp = s->head;
 	} else {
 		while(temp->next != NULL) temp = temp->next;
+		printf("wc3\n");
 		temp->next = s->head;
 		temp = temp->next;
 	}
 
 	// Set head of ready queue to current
+	printf("wc4\n");
 	s->head = s->head->next;
+	printf("wc5\n");
 	s->head->prev = NULL;
 
 	// Make the end of the join list NULL
