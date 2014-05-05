@@ -105,7 +105,7 @@ int pthread_join(pthread_t thread, void **value_ptr) {
 	printf("j3\n");
 
 	// Set the join val
-	*value_ptr = &joinVals[thread];
+	if(value_ptr != NULL) *value_ptr = &joinVals[thread];
 
 	printf("j4\n");
 
