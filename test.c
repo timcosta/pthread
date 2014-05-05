@@ -68,6 +68,7 @@ void * producer() {
 		pthread_mutex_lock(&pcm);
 		shared += 2;
 		pthread_yield();
+		printf("afteryield\n");
 		pthread_mutex_unlock(&pcm);
 	}while(count<10);
 }

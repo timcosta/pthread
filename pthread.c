@@ -82,6 +82,7 @@ int pthread_yield(void) {
 	// swap to schedular context to perform yield
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
+	printf("eihjkjewr\n");
 
 	return 0;
 }
