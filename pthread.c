@@ -38,7 +38,7 @@ int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_
 	//printf("tcb crated\n");
 
 	// Thread's context stack 
-	char* thread_stack = (char*) malloc(136*sizeof(char));
+	char* thread_stack = (char*) malloc(8*1064);
 	//printf("test\n");
 	// Initialize this new context
 	//printf("context retrieving\n");
@@ -82,7 +82,9 @@ int pthread_yield(void) {
 	// swap to schedular context to perform yield
 	swapcontext(&schedular->head->thread_cb->thread_context, &schedular->sched_context);
 
-	printf("My nigga yield\n");
+
+	printf("Heijsoisjef\n");
+
 
 	return 0;
 }
