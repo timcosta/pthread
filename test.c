@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <signal.h>
 
 pthread_mutex_t mutex;
 pthread_cond_t wrt;
