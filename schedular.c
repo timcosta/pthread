@@ -298,6 +298,7 @@ void waitOnCond (Schedular *s) {
 		printf("wc2\n");
 		temp = s->head;
 	} else {
+		printf("wc2.5\n");
 		while(temp->next != NULL) temp = temp->next;
 		printf("wc3\n");
 		temp->next = s->head;
