@@ -232,6 +232,7 @@ int pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr) 
 
 	// Set the index(count) for the mutex. for where it is in the queue array
 	mutex->__data.__count = schedular->nextMutexId++;
+	printf("xx: %d",mutex->__data.__count);
 	mutex->__data.__lock = 0;
 
 	return 0;
