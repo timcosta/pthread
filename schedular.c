@@ -45,7 +45,6 @@ typedef struct Schedular {
 
 	// Vals for thread lib
 	int action;
-	int voluntaryExit;
 	pthread_t numCreated;
 	pthread_t join_id;
 	ucontext_t sched_context;
@@ -121,10 +120,6 @@ void runNextThread(Schedular * s) {
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
 
-
-	/* * * */
-	printReadyQueue(s);
-
 	// Change context to new TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 
@@ -168,20 +163,15 @@ void currExit(Schedular * s) {
 		s->head = s->head->next;
 		s->head->prev = NULL;
 	}
-	if(s->voluntaryExit == 1) {
 
-		free(temp); // delete the memory of this node
+	// delete the memory of this node
+	free(temp); 
 
-	}
 	// Decrement the size of the queue
 	s->size--;
 	s->voluntaryExit = 0;
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
-
-	/* * * */
-	//printf("Exiting T2\n");
-	printReadyQueue(s);
 
 	// Unless the last thread has exited, swap back to user mode
 	if (s->head != NULL) {
@@ -216,16 +206,46 @@ Node * findTarget(Node * root, pthread_t id) {
 
 }
 
+// Look through the mutex and cond. var queues to find the joining thread
+Node * findTargetInMaps(Schedular * s, pthread_t id) {
+
+	Node * temp;
+	int i,j;
+
+	// Search through cond. var map for the thread
+	for (i=0; i<s->nextCondId; i++) {
+		temp = condVarMap[i];
+
+		if (temp == NULL) continue;
+		while(temp != NULL) {
+			if (temp->thread_cb->thread_id == id) return temp;
+			temp = temp->next;
+		}
+	}
+
+	// Search through mutex for the thread
+	for (j=0; j<s->nextMutexId; j++) {
+		temp = mutexVarMap[j];
+
+		if (temp == NULL) continue;
+		while(temp != NULL) {
+			if (temp->thread_cb->thread_id == id) return temp;
+			temp = temp->next;
+		}
+	}
+}
+
 // Join current running thread to another thread
 void join(Schedular * s) {
 
 	// Find the thread we are joing on
 	Node * temp = findTarget(s->head, s->join_id);
 
+	if (temp == NULL) findTargetInMaps(s->join_id);
+
 	if (temp != NULL) {
 
 		//printf("temp not null\n");
-
 
 		// Add current TCB to back of its joining queue
 		if (temp->join_list == NULL) {
@@ -274,6 +294,7 @@ void waitOnCond (Schedular *s) {
 
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
+		condVarMap[s->currCondVarId] = s->head;
 		temp = s->head;
 	} else {
 		while(temp->next != NULL) temp = temp->next;
@@ -304,7 +325,7 @@ void sig(Schedular *s) {
 
 	if (temp != NULL) {
 		
-		addToReadyTail(temp);
+		addToReadyTail(temp,s,0);
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
@@ -323,7 +344,7 @@ void broadcast (Schedular *s) {
 	// Add all threads to the back of the ready queue
 	while (temp != NULL) {
 		
-		addToReadyTail(temp);
+		addToReadyTail(temp,s,0);
 
 		temp = condVarMap[s->currCondVarId];
 	}
@@ -342,6 +363,7 @@ void lock(Schedular *s) {
 
 	// Add the current thread to the back of the list
 	if (temp == NULL) {
+		mutexVarMap[s->currMutexVarId] = s->head;
 		temp = s->head;
 	} else {
 		while(temp->next != NULL) temp = temp->next;
@@ -370,7 +392,7 @@ void unlock(Schedular *s) {
 
 	if (temp != NULL) {
 		
-		addToReadyTail(temp,s);
+		addToReadyTail(temp,s,1);
 	}
 
 	// If a thread terminates, this calls pthread exit for it 
@@ -381,7 +403,7 @@ void unlock(Schedular *s) {
 }
 
 // Adds a node from a cond. var queue to the back of the ready queue
-void addToReadyTail(Node* n,Schedular *s) {
+void addToReadyTail(Node* n,Schedular *s, int isLock) {
 
 	// Add this to the back of the ready queue
 	s->tail->next = n;
@@ -389,7 +411,11 @@ void addToReadyTail(Node* n,Schedular *s) {
 	s->tail = n;
 
 	// Set the head of the queue to the next value
-	condVarMap[s->currCondVarId] = n->next;
+	if (isLock) {
+		mutexVarMap[s->currMutexVarId] = n->next;
+	} else {
+		condVarMap[s->currCondVarId] = n->next;
+	}
 
 	// End of the list points to NULL
 	s->tail->next = NULL;
