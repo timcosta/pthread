@@ -32,8 +32,7 @@ void * writer() {
 	int count = 0;
 	printf("\tInitializing Writer...\n");
 	do {
-		printf("%d\n",mutex.__data.__lock);
-		pthread_cond_wait(&wrt,&mutex);
+		if(mutex.__data.__lock)	pthread_cond_wait(&wrt,&mutex);
 		printf("\twriting...");
 		sleep(5);
 		printf("\tdone writing.");
