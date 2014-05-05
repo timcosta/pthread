@@ -131,9 +131,9 @@ void main(void) {
 
 	pthread_join(r1,NULL);
 	pthread_join(w1,NULL);
-	pthread_join(r2,NULL);
-	pthread_join(r3,NULL);
-	pthread_join(r4,NULL);
+	//pthread_join(r2,NULL);
+	//pthread_join(r3,NULL);
+	//pthread_join(r4,NULL);
 
 	printf("Readers-Writers problem completed.\n");
 	printf("End of test sequence.\n");
