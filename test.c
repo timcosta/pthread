@@ -11,7 +11,7 @@ void * reader() {
 	do {
 		pthread_mutex_lock(&mutex);
 		readCount++;
-		if(readCount==1) pthread_cond_wait(&wrt);
+		if(readCount==1) pthread_cond_wait(&wrt,&mutex);
 		pthread_mutex_unlock(&mutex);
 		printf("\treading...");
 		pthread_mutex_lock(&mutex);
