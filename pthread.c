@@ -19,6 +19,11 @@ char templ_stack[1000][8192];
 
 struct Schedular * makeSchedular(TCB * main_block);
 
+
+struct sigaction handler;
+handler.sa_handler = handle_SIGALRM;
+sigaction(SIGALRM,&handler, NULL);
+
 // Creates a user level thread
 int pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine) (void *) , void *arg) {
 	alarm(0);
@@ -379,10 +384,3 @@ int pthread_cond_broadcast(pthread_cond_t *cond) {
 void handle_SIGALRM() {
 	pthread_yield();
 }
-
-struct sigaction handler;
-handler.sa_handler = handle_SIGALRM;
-sigaction(SIGALRM,&handler, NULL);
-
-
-
