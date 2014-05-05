@@ -388,15 +388,15 @@ void lock(Schedular *s) {
 void unlock(Schedular *s) {
 	// Get the head of the queue
 	Node * temp = mutexVarMap[s->currMutexVarId];
-
+	printf("1\n");
 	if (temp != NULL) {
-		
+		printf("2\n");
 		addToReadyTail(temp,s,1);
 	}
-
+	printf("3\n");
 	// If a thread terminates, this calls pthread exit for it 
 	s->action = 0;
-
+	printf("4\n");
 	// Change context to current TCB context
 	swapcontext(&s->sched_context,&s->head->thread_cb->thread_context);
 }
